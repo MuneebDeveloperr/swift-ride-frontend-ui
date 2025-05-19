@@ -29,8 +29,10 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
     phone: "",
     pickupLocation: "",
     dropLocation: "",
-    pickupDateTime: "",
-    returnDateTime: "",
+    pickupDate: "",
+    pickupTime: "",
+    returnDate: "",
+    returnTime: "",
     vehicleCategory,
     rentalPlan: "12hour",
     withDriver: false,
@@ -83,7 +85,7 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
     // Validate form
     if (!formData.fullName || !formData.email || !formData.phone || 
         !formData.pickupLocation || !formData.dropLocation || 
-        !formData.pickupDateTime || !formData.returnDateTime) {
+        !formData.pickupDate || !formData.returnDate) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -111,8 +113,10 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
         phone: "",
         pickupLocation: "",
         dropLocation: "",
-        pickupDateTime: "",
-        returnDateTime: "",
+        pickupDate: "",
+        pickupTime: "",
+        returnDate: "",
+        returnTime: "",
         vehicleCategory,
         rentalPlan: "12hour",
         withDriver: false,
@@ -202,26 +206,52 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
           
           {/* Date and Time */}
           <div>
-            <label className="form-label" htmlFor="pickupDateTime">Pickup Date & Time</label>
+            <label className="form-label" htmlFor="pickupDate">Pickup Date</label>
             <input
-              type="datetime-local"
-              id="pickupDateTime"
-              name="pickupDateTime"
+              type="date"
+              id="pickupDate"
+              name="pickupDate"
               className="form-input"
-              value={formData.pickupDateTime}
+              value={formData.pickupDate}
               onChange={handleChange}
               required
             />
           </div>
           
           <div>
-            <label className="form-label" htmlFor="returnDateTime">Return Date & Time</label>
+            <label className="form-label" htmlFor="pickupTime">Pickup Time</label>
             <input
-              type="datetime-local"
-              id="returnDateTime"
-              name="returnDateTime"
+              type="time"
+              id="pickupTime"
+              name="pickupTime"
               className="form-input"
-              value={formData.returnDateTime}
+              value={formData.pickupTime}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="form-label" htmlFor="returnDate">Return Date</label>
+            <input
+              type="date"
+              id="returnDate"
+              name="returnDate"
+              className="form-input"
+              value={formData.returnDate}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          
+          <div>
+            <label className="form-label" htmlFor="returnTime">Return Time</label>
+            <input
+              type="time"
+              id="returnTime"
+              name="returnTime"
+              className="form-input"
+              value={formData.returnTime}
               onChange={handleChange}
               required
             />

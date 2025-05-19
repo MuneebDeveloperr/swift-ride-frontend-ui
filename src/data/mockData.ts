@@ -521,6 +521,7 @@ export const mockBookings: Booking[] = [
     returnDateTime: "2025-05-05T22:00:00",
     totalPrice: 6500,
     status: "completed",
+    paymentStatus: "completed",
     createdAt: "2025-04-20T15:30:00"
   },
   {
@@ -537,6 +538,7 @@ export const mockBookings: Booking[] = [
     returnDateTime: "2025-06-12T08:00:00",
     totalPrice: 56000,
     status: "upcoming",
+    paymentStatus: "pending",
     createdAt: "2025-05-15T11:45:00"
   },
   {
@@ -553,6 +555,7 @@ export const mockBookings: Booking[] = [
     returnDateTime: "2025-05-23T09:00:00",
     totalPrice: 33000,
     status: "cancelled",
+    paymentStatus: "failed",
     createdAt: "2025-05-10T14:20:00"
   },
   {
@@ -569,6 +572,7 @@ export const mockBookings: Booking[] = [
     returnDateTime: "2025-07-16T02:00:00",
     totalPrice: 8000,
     status: "upcoming",
+    paymentStatus: "pending",
     createdAt: "2025-05-18T10:15:00"
   },
   {
@@ -585,6 +589,7 @@ export const mockBookings: Booking[] = [
     returnDateTime: "2025-04-27T12:00:00",
     totalPrice: 37000,
     status: "completed",
+    paymentStatus: "completed",
     createdAt: "2025-04-15T09:30:00"
   }
 ];

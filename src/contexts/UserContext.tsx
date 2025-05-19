@@ -1,19 +1,48 @@
 
-import { createContext, useContext } from "react";
-import { User } from "../types";
+// This is just to ensure the UserContext is properly typed
+// Assuming the UserContext already exists and we're just adding types
 
-interface UserContextType {
+import React, { createContext, useContext, useState } from "react";
+import { User } from "@/types";
+
+type UserContextType = {
   user: User | null;
   login: (userData: User) => void;
   logout: () => void;
-  updateUser: (updatedData: Partial<User>) => void;
-}
+  updateUser: (userData: Partial<User>) => void;
+};
 
-export const UserContext = createContext<UserContextType>({
-  user: null,
-  login: () => {},
-  logout: () => {},
-  updateUser: () => {},
-});
+const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const useUser = () => useContext(UserContext);
+export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
+
+  const login = (userData: User) => {
+    setUser(userData);
+  };
+
+  const logout = () => {
+    setUser(null);
+  };
+
+  const updateUser = (userData: Partial<User>) => {
+    setUser(prev => {
+      if (!prev) return null;
+      return { ...prev, ...userData };
+    });
+  };
+
+  return (
+    <UserContext.Provider value={{ user, login, logout, updateUser }}>
+      {children}
+    </UserContext.Provider>
+  );
+};
+
+export const useUser = () => {
+  const context = useContext(UserContext);
+  if (context === undefined) {
+    throw new Error("useUser must be used within a UserProvider");
+  }
+  return context;
+};

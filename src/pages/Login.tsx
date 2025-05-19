@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useUser } from "@/contexts/UserContext";
+import { User } from "@/types";
 
 const Login = () => {
   const { login } = useUser();

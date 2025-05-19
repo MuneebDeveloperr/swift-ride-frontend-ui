@@ -1,5 +1,6 @@
 
 import { Helmet } from "react-helmet";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";

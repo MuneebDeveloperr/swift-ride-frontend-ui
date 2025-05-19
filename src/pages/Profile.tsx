@@ -1,11 +1,11 @@
-
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useUser } from "@/contexts/UserContext";
 import Navbar from "@/components/Navbar";
-import { provinces, cities } from "@/data/locationData"; // We'll create this file next
+import { provinces, cities } from "@/data/locationData";
+import { UserProfile } from "@/types";
 
 const Profile = () => {
   const { user, updateUser } = useUser();

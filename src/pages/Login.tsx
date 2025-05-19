@@ -1,150 +1,176 @@
 
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { toast } from "@/components/ui/sonner";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { useUser } from "@/contexts/UserContext";
-import Navbar from "@/components/Navbar";
-import { v4 as uuidv4 } from "uuid";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
   const { login } = useUser();
-
+  const navigate = useNavigate();
+  
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+  
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+  
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!email || !password) {
-      toast.error("Please enter both email and password");
-      return;
-    }
-    
-    setLoading(true);
+    setIsLoading(true);
     
     // Simulate API call
     setTimeout(() => {
-      // In a real app, this would be a backend authentication call
-      if (email === "demo@example.com" && password === "password123") {
-        const userData = {
-          id: uuidv4(),
+      // Demo users
+      if (formData.email === "user@example.com" && formData.password === "password") {
+        login({
+          id: "user123",
           name: "Demo User",
-          email: "demo@example.com",
-          dateOfBirth: "1990-01-01",
-          gender: "male" as const,
-          cnic: "12345-1234567-1",
-          province: "Punjab",
-          postalCode: "54000"
-        };
-        
-        login(userData);
+          email: formData.email,
+          role: "user"
+        });
         toast.success("Login successful!");
         navigate("/");
+      } else if (formData.email === "admin@example.com" && formData.password === "password") {
+        login({
+          id: "admin123",
+          name: "Admin User",
+          email: formData.email,
+          role: "admin"
+        });
+        toast.success("Admin login successful!");
+        navigate("/admin");
       } else {
         toast.error("Invalid email or password");
       }
       
-      setLoading(false);
-    }, 1500);
+      setIsLoading(false);
+    }, 1000);
   };
-
+  
   return (
     <>
       <Helmet>
         <title>Login - Swift Ride</title>
-        <meta name="description" content="Log in to your Swift Ride account to manage your bookings and profile." />
+        <meta name="description" content="Login to your Swift Ride account to book vehicles and manage your reservations." />
       </Helmet>
       
-      <Navbar />
-      
-      <main className="pt-20 pb-16 bg-gray-50 min-h-screen flex items-center">
-        <div className="container mx-auto px-4">
-          <div className="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-8">
-              <div className="text-center mb-8">
-                <h1 className="text-2xl font-bold">Welcome Back</h1>
-                <p className="text-gray-600 mt-2">Log in to access your Swift Ride account</p>
-              </div>
-              
-              <form onSubmit={handleSubmit}>
-                <div className="mb-6">
-                  <label className="form-label" htmlFor="email">Email</label>
+      <div className="min-h-screen flex">
+        {/* Left Side - Form */}
+        <div className="flex-1 flex items-center justify-center p-8">
+          <div className="w-full max-w-md">
+            <div className="text-center mb-8">
+              <Link to="/" className="inline-block">
+                <span className="text-3xl font-bold text-primary">Swift<span className="text-secondary">Ride</span></span>
+              </Link>
+              <h1 className="text-2xl font-bold mt-6 mb-2">Welcome Back</h1>
+              <p className="text-gray-600">Login to your account to continue</p>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i className="fas fa-envelope text-gray-400"></i>
+                  </div>
                   <input
                     type="email"
                     id="email"
-                    className="form-input"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
                     placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
                     required
                   />
                 </div>
-                
-                <div className="mb-6">
-                  <label className="form-label" htmlFor="password">Password</label>
-                  <input
-                    type="password"
-                    id="password"
-                    className="form-input"
-                    placeholder="Enter your password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                
-                <div className="flex justify-between items-center mb-6">
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      id="rememberMe"
-                      checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                    />
-                    <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-600">
-                      Remember me
-                    </label>
+              </div>
+              
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i className="fas fa-lock text-gray-400"></i>
                   </div>
-                  
-                  <Link to="/forgot-password" className="text-sm text-primary hover:text-primary-dark">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="pl-10 w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'} text-gray-400`}></i>
+                  </button>
+                </div>
+                <div className="flex justify-end mt-1">
+                  <Link to="/forgot-password" className="text-sm text-primary hover:underline">
                     Forgot password?
                   </Link>
                 </div>
-                
+              </div>
+              
+              <div>
                 <button
                   type="submit"
-                  className="btn-primary w-full"
-                  disabled={loading}
+                  disabled={isLoading}
+                  className="w-full btn-primary py-2 flex items-center justify-center"
                 >
-                  {loading ? (
-                    <span className="flex items-center justify-center">
-                      <i className="fas fa-spinner fa-spin mr-2"></i> Logging in...
-                    </span>
-                  ) : 'Login'}
+                  {isLoading ? (
+                    <>
+                      <i className="fas fa-spinner fa-spin mr-2"></i>
+                      Logging in...
+                    </>
+                  ) : "Login"}
                 </button>
-                
-                <div className="text-center mt-6">
-                  <p className="text-gray-600 text-sm">
-                    Don't have an account? <Link to="/signup" className="text-primary hover:text-primary-dark">Sign up</Link>
-                  </p>
+              </div>
+              
+              <p className="text-center text-gray-600">
+                Don't have an account?{" "}
+                <Link to="/signup" className="text-primary hover:underline">
+                  Create an Account
+                </Link>
+              </p>
+
+              <div className="border-t border-gray-200 pt-4">
+                <div className="mt-4 text-sm text-gray-500 text-center">
+                  <p className="mb-2">Demo credentials:</p>
+                  <p>User: user@example.com / password</p>
+                  <p>Admin: admin@example.com / password</p>
                 </div>
-                
-                <div className="mt-6">
-                  <p className="text-xs text-center text-gray-500 mb-2">Or login with demo account:</p>
-                  <div className="bg-gray-100 p-3 rounded-md text-center">
-                    <p className="text-sm text-gray-600">Email: demo@example.com</p>
-                    <p className="text-sm text-gray-600">Password: password123</p>
-                  </div>
-                </div>
-              </form>
+              </div>
+            </form>
+          </div>
+        </div>
+        
+        {/* Right Side - Image */}
+        <div className="hidden lg:block lg:w-1/2 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1485291571150-772bcfc10da5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')" }}>
+          <div className="h-full bg-black bg-opacity-30 flex items-center">
+            <div className="px-12 max-w-lg">
+              <h2 className="text-4xl font-bold text-white mb-4">Experience the best vehicle rental service</h2>
+              <p className="text-white/90">Get access to premium vehicles for your journey at affordable prices.</p>
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 };

@@ -1,7 +1,8 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
+import { useOnClickOutside } from "@/hooks/useOnClickOutside";
 
 const Navbar = () => {
   const { user, logout } = useUser();
@@ -11,6 +12,13 @@ const Navbar = () => {
   const [vehicleDropdownOpen, setVehicleDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  
+  const vehicleDropdownRef = useRef<HTMLDivElement>(null);
+  const profileDropdownRef = useRef<HTMLDivElement>(null);
+
+  // Handle outside clicks for dropdowns
+  useOnClickOutside(vehicleDropdownRef, () => setVehicleDropdownOpen(false));
+  useOnClickOutside(profileDropdownRef, () => setProfileDropdownOpen(false));
 
   useEffect(() => {
     const handleScroll = () => {
@@ -23,8 +31,17 @@ const Navbar = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    // Search logic will be implemented later
     console.log("Searching for:", searchQuery);
+  };
+
+  // Toggle dropdown instead of just opening
+  const toggleVehicleDropdown = () => {
+    setVehicleDropdownOpen(!vehicleDropdownOpen);
+  };
+
+  // Toggle profile dropdown
+  const toggleProfileDropdown = () => {
+    setProfileDropdownOpen(!profileDropdownOpen);
   };
 
   return (
@@ -46,19 +63,19 @@ const Navbar = () => {
               Home
             </Link>
             
-            {/* Vehicle Dropdown */}
-            <div className="relative group">
+            {/* Vehicle Dropdown - Fixed to toggle properly */}
+            <div className="relative group" ref={vehicleDropdownRef}>
               <button 
                 className={`nav-link flex items-center ${["/cars", "/buses", "/minibuses", "/coasters"].includes(location.pathname) ? "active-nav-link" : ""}`}
-                onClick={() => setVehicleDropdownOpen(!vehicleDropdownOpen)}
+                onClick={toggleVehicleDropdown}
               >
-                Vehicles <i className="fas fa-chevron-down ml-1 text-xs"></i>
+                Vehicles <i className={`fas fa-chevron-${vehicleDropdownOpen ? "up" : "down"} ml-1 text-xs`}></i>
               </button>
-              <div className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 transition-all duration-300 ${vehicleDropdownOpen || location.pathname.includes("/") ? "opacity-100 visible" : "opacity-0 invisible"}`}>
-                <Link to="/cars" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Cars</Link>
-                <Link to="/buses" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Buses</Link>
-                <Link to="/minibuses" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mini Buses</Link>
-                <Link to="/coasters" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Coasters</Link>
+              <div className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 transition-all duration-300 ${vehicleDropdownOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}>
+                <Link to="/cars" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setVehicleDropdownOpen(false)}>Cars</Link>
+                <Link to="/buses" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setVehicleDropdownOpen(false)}>Buses</Link>
+                <Link to="/minibuses" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setVehicleDropdownOpen(false)}>Mini Buses</Link>
+                <Link to="/coasters" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setVehicleDropdownOpen(false)}>Coasters</Link>
               </div>
             </div>
             
@@ -68,13 +85,16 @@ const Navbar = () => {
             <Link to="/contact" className={`nav-link ${location.pathname === "/contact" ? "active-nav-link" : ""}`}>
               Contact
             </Link>
-            
-            {/* Search Form */}
-            <form onSubmit={handleSearch} className="hidden lg:flex items-center bg-gray-100 rounded-full px-3 py-1">
+          </div>
+
+          {/* Search and Auth - Moved search to align next to login button */}
+          <div className="hidden md:flex items-center space-x-4">
+            {/* Search Form - Moved here */}
+            <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-full px-3 py-1">
               <input
                 type="text"
                 placeholder="Search..."
-                className="bg-transparent border-none focus:outline-none text-sm"
+                className="bg-transparent border-none focus:outline-none text-sm w-32 lg:w-auto"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -82,33 +102,33 @@ const Navbar = () => {
                 <i className="fas fa-search"></i>
               </button>
             </form>
-          </div>
 
-          {/* Authentication/Profile */}
-          <div className="hidden md:flex items-center space-x-4">
             {user ? (
-              <div className="relative">
+              <div className="relative" ref={profileDropdownRef}>
                 <button
-                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                  onClick={toggleProfileDropdown}
                   className="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-gray-900"
                 >
                   <span className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">
                     {user.name.charAt(0).toUpperCase()}
                   </span>
                   <span>{user.name.split(" ")[0]}</span>
-                  <i className="fas fa-chevron-down text-xs"></i>
+                  <i className={`fas fa-chevron-${profileDropdownOpen ? "up" : "down"} text-xs`}></i>
                 </button>
                 
-                {/* Profile Dropdown */}
+                {/* Profile Dropdown - Improved styling */}
                 <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 ${profileDropdownOpen ? "block" : "hidden"}`}>
-                  <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</Link>
-                  <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</Link>
-                  <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</Link>
+                  <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setProfileDropdownOpen(false)}>Profile</Link>
+                  <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setProfileDropdownOpen(false)}>Dashboard</Link>
+                  <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setProfileDropdownOpen(false)}>Settings</Link>
                   <button 
-                    onClick={logout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    onClick={() => {
+                      logout();
+                      setProfileDropdownOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:text-red-800 hover:bg-gray-100 transition-colors"
                   >
-                    Logout
+                    <i className="fas fa-sign-out-alt mr-2"></i> Logout
                   </button>
                 </div>
               </div>
@@ -189,9 +209,9 @@ const Navbar = () => {
                   <Link to="/settings" className="nav-link">Settings</Link>
                   <button 
                     onClick={logout}
-                    className="text-left text-red-500 hover:text-red-700"
+                    className="text-left text-red-500 hover:text-red-700 flex items-center"
                   >
-                    Logout
+                    <i className="fas fa-sign-out-alt mr-2"></i> Logout
                   </button>
                 </div>
               </div>

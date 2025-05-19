@@ -23,6 +23,8 @@ import Profile from "./pages/Profile";
 import Dashboard from "./pages/Dashboard";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import BookingPage from "./pages/BookingPage";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
 
 // Components
 import ScrollToTop from "./components/ScrollToTop";
@@ -73,6 +75,7 @@ const App = () => {
               <Route path="/buses" element={<Buses />} />
               <Route path="/minibuses" element={<MiniBuses />} />
               <Route path="/coasters" element={<Coasters />} />
+              <Route path="/booking/:id" element={<BookingPage />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/login" element={<Login />} />
@@ -81,6 +84,7 @@ const App = () => {
               <Route path="/profile" element={<Profile />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatWidget />

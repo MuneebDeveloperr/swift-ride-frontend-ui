@@ -49,7 +49,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links - Removed Login and Signup links */}
           <div className="mb-8 md:mb-0">
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-3">
@@ -61,12 +61,6 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</Link>
-              </li>
-              <li>
-                <Link to="/login" className="text-gray-400 hover:text-white transition-colors">Login</Link>
-              </li>
-              <li>
-                <Link to="/signup" className="text-gray-400 hover:text-white transition-colors">Sign Up</Link>
               </li>
             </ul>
           </div>

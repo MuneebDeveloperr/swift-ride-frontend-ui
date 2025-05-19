@@ -1,5 +1,6 @@
 
 import { useState, useEffect } from "react";
+import { Slider } from "@/components/ui/slider";
 
 interface FiltersProps {
   vehicleType: "car" | "bus" | "minibus" | "coaster";
@@ -41,10 +42,7 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
     priceRange: initialPriceRange,
   });
 
-  const [priceInputs, setPriceInputs] = useState({
-    min: initialPriceRange[0],
-    max: initialPriceRange[1],
-  });
+  const [sliderValue, setSliderValue] = useState<[number, number]>(initialPriceRange);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -54,25 +52,15 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
     }));
   };
 
-  const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const numValue = parseInt(value) || 0;
-    
-    setPriceInputs((prev) => ({
-      ...prev,
-      [name]: numValue,
-    }));
-  };
-
-  const applyPriceFilter = () => {
-    // Ensure min is less than max
-    const min = Math.min(priceInputs.min, priceInputs.max);
-    const max = Math.max(priceInputs.min, priceInputs.max);
-    
-    setFilters((prev) => ({
-      ...prev,
-      priceRange: [min, max],
-    }));
+  const handlePriceChange = (value: number[]) => {
+    if (value.length === 2) {
+      const priceRange: [number, number] = [value[0], value[1]];
+      setSliderValue(priceRange);
+      setFilters(prev => ({
+        ...prev,
+        priceRange
+      }));
+    }
   };
 
   const resetFilters = () => {
@@ -83,10 +71,7 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
       priceRange: initialPriceRange,
     });
     
-    setPriceInputs({
-      min: initialPriceRange[0],
-      max: initialPriceRange[1],
-    });
+    setSliderValue(initialPriceRange);
   };
 
   // Pass filter changes to parent component
@@ -119,36 +104,46 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Sort By
             </label>
-            <select
-              name="sortBy"
-              value={filters.sortBy}
-              onChange={handleFilterChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-            >
-              <option value="default">Recommended</option>
-              <option value="price_low_high">Price: Low to High</option>
-              <option value="price_high_low">Price: High to Low</option>
-            </select>
+            <div className="relative">
+              <select
+                name="sortBy"
+                value={filters.sortBy}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary appearance-none"
+              >
+                <option value="default">Recommended</option>
+                <option value="price_low_high">Price: Low to High</option>
+                <option value="price_high_low">Price: High to Low</option>
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                <i className="fas fa-chevron-down text-gray-400 text-xs"></i>
+              </div>
+            </div>
           </div>
 
-          {/* Brand Filter */}
+          {/* Brand Filter - Fixed to open downward */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Brand
             </label>
-            <select
-              name="brand"
-              value={filters.brand}
-              onChange={handleFilterChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-            >
-              <option value="all">All Brands</option>
-              {brands.map((brand) => (
-                <option key={brand} value={brand.toLowerCase()}>
-                  {brand}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                name="brand"
+                value={filters.brand}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary appearance-none"
+              >
+                <option value="all">All Brands</option>
+                {brands.map((brand) => (
+                  <option key={brand} value={brand.toLowerCase()}>
+                    {brand}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                <i className="fas fa-chevron-down text-gray-400 text-xs"></i>
+              </div>
+            </div>
           </div>
 
           {/* Location Filter */}
@@ -156,52 +151,46 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Location
             </label>
-            <select
-              name="location"
-              value={filters.location}
-              onChange={handleFilterChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-            >
-              <option value="all">All Locations</option>
-              {locations.map((location) => (
-                <option key={location} value={location.toLowerCase()}>
-                  {location}
-                </option>
-              ))}
-            </select>
+            <div className="relative">
+              <select
+                name="location"
+                value={filters.location}
+                onChange={handleFilterChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary appearance-none"
+              >
+                <option value="all">All Locations</option>
+                {locations.map((location) => (
+                  <option key={location} value={location.toLowerCase()}>
+                    {location}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                <i className="fas fa-chevron-down text-gray-400 text-xs"></i>
+              </div>
+            </div>
           </div>
 
-          {/* Price Range */}
+          {/* Price Range - Improved with Slider */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Price Range (PKR)
-            </label>
-            <div className="flex items-center space-x-2">
-              <input
-                type="number"
-                name="min"
-                value={priceInputs.min}
-                onChange={handlePriceChange}
-                min={0}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="Min"
+            <div className="flex justify-between items-center mb-1">
+              <label className="block text-sm font-medium text-gray-700">
+                Price Range (PKR)
+              </label>
+              <div className="text-xs text-gray-500">
+                {sliderValue[0].toLocaleString()} - {sliderValue[1].toLocaleString()}
+              </div>
+            </div>
+            <div className="px-2 py-4">
+              <Slider
+                defaultValue={[initialPriceRange[0], initialPriceRange[1]]}
+                value={[sliderValue[0], sliderValue[1]]}
+                min={initialPriceRange[0]}
+                max={initialPriceRange[1]}
+                step={(initialPriceRange[1] - initialPriceRange[0]) / 100}
+                onValueChange={handlePriceChange}
+                className="my-4"
               />
-              <span>-</span>
-              <input
-                type="number"
-                name="max"
-                value={priceInputs.max}
-                onChange={handlePriceChange}
-                min={0}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="Max"
-              />
-              <button
-                onClick={applyPriceFilter}
-                className="bg-primary text-white px-3 py-2 rounded-md"
-              >
-                <i className="fas fa-check"></i>
-              </button>
             </div>
           </div>
         </div>

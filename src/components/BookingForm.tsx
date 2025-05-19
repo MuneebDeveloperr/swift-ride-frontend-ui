@@ -1,9 +1,18 @@
 
-import { useState } from "react";
-import { toast } from "@/components/ui/sonner";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import { useUser } from "@/contexts/UserContext";
-import { Dialog } from "@/components/ui/dialog";
-import { BookingFormData, RentalPlan, PricingMatrix } from "@/types";
+import { 
+  AlertDialog, 
+  AlertDialogContent, 
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction
+} from "@/components/ui/alert-dialog";
+import { BookingFormData, RentalPlan } from "@/types";
 import { calculatePrice } from "@/utils/pricing";
 
 interface BookingFormProps {
@@ -44,9 +53,9 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
   };
 
   // Update price when relevant form fields change
-  useState(() => {
+  useEffect(() => {
     updatePrice();
-  });
+  }, [formData.rentalPlan, formData.withDriver]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -60,14 +69,12 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
         ...prev, 
         [name]: value as RentalPlan
       }));
-      setTimeout(updatePrice, 0);
     }
   };
 
   const handleDriverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const withDriver = e.target.value === "with";
     setFormData((prev) => ({ ...prev, withDriver }));
-    setTimeout(updatePrice, 0);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -122,7 +129,7 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
 
   return (
     <>
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg p-6 shadow-md">
+      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md">
         <h3 className="text-xl font-semibold mb-4">Book Your Vehicle</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -304,48 +311,40 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
         </div>
       </form>
 
-      {/* Confirmation Modal */}
-      <Dialog open={showConfirmation} onOpenChange={setShowConfirmation}>
-        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full p-6 shadow-xl">
-            <h3 className="text-xl font-bold mb-4">Confirm Your Booking</h3>
-            
-            <div className="space-y-3 mb-4">
-              <p><span className="font-medium">Vehicle:</span> {vehicleCategory.charAt(0).toUpperCase() + vehicleCategory.slice(1)}</p>
-              <p><span className="font-medium">Rental Plan:</span> {formData.rentalPlan === "12hour" ? "12 Hours" : 
-                      formData.rentalPlan === "2day" ? "2 Days" : "3 Days"}</p>
-              <p><span className="font-medium">Driver:</span> {formData.withDriver ? "With Driver" : "Without Driver"}</p>
-              <p><span className="font-medium">Pickup:</span> {formData.pickupLocation}</p>
-              <p><span className="font-medium">Drop-off:</span> {formData.dropLocation}</p>
-              <p className="text-xl font-bold text-primary">Total: PKR {price?.toLocaleString()}</p>
-            </div>
-            
-            <div className="flex space-x-3">
-              <button
-                type="button"
-                className="flex-1 py-2 border border-gray-300 rounded-md"
-                onClick={() => setShowConfirmation(false)}
-                disabled={isSubmitting}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="flex-1 btn-primary"
-                onClick={confirmBooking}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? 
-                  <span className="flex items-center justify-center">
-                    <i className="fas fa-spinner fa-spin mr-2"></i> Processing...
-                  </span> : 
-                  'Confirm Booking'
-                }
-              </button>
-            </div>
-          </div>
-        </div>
-      </Dialog>
+      {/* Confirmation Modal - Using AlertDialog for better UX */}
+      <AlertDialog open={showConfirmation} onOpenChange={setShowConfirmation}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirm Your Booking</AlertDialogTitle>
+            <AlertDialogDescription>
+              <div className="space-y-3 mb-4">
+                <p><span className="font-medium">Vehicle:</span> {vehicleCategory.charAt(0).toUpperCase() + vehicleCategory.slice(1)}</p>
+                <p><span className="font-medium">Rental Plan:</span> {formData.rentalPlan === "12hour" ? "12 Hours" : 
+                        formData.rentalPlan === "2day" ? "2 Days" : "3 Days"}</p>
+                <p><span className="font-medium">Driver:</span> {formData.withDriver ? "With Driver" : "Without Driver"}</p>
+                <p><span className="font-medium">Pickup:</span> {formData.pickupLocation}</p>
+                <p><span className="font-medium">Drop-off:</span> {formData.dropLocation}</p>
+                <p className="text-xl font-bold text-primary">Total: PKR {price?.toLocaleString()}</p>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isSubmitting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmBooking}
+              disabled={isSubmitting}
+              className="btn-primary"
+            >
+              {isSubmitting ? 
+                <span className="flex items-center justify-center">
+                  <i className="fas fa-spinner fa-spin mr-2"></i> Processing...
+                </span> : 
+                'Confirm Booking'
+              }
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };

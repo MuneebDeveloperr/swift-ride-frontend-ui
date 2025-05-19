@@ -1,6 +1,6 @@
 
-import { useState } from "react";
-import { Dialog } from "@/components/ui/dialog";
+import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import BookingForm from "./BookingForm";
 import { VehicleType, RentalPlan } from "@/types";
 import { calculatePrice } from "@/utils/pricing";
@@ -23,6 +23,13 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
   };
 
   const price = calculatePrice(vehicle.type, selectedPlan, withDriver);
+
+  // Clear any potential booking state from localStorage on component mount
+  useEffect(() => {
+    if (localStorage.getItem("recentBooking")) {
+      localStorage.removeItem("recentBooking");
+    }
+  }, []);
 
   return (
     <>
@@ -124,26 +131,19 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
         </div>
       </div>
 
-      {/* Booking Modal */}
+      {/* Booking Modal - Using proper Dialog component structure */}
       <Dialog open={showBookingModal} onOpenChange={setShowBookingModal}>
-        <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Book {vehicle.brand} {vehicle.name}</h2>
-                <button onClick={() => setShowBookingModal(false)} className="text-gray-500 hover:text-gray-700">
-                  <i className="fas fa-times"></i>
-                </button>
-              </div>
-              
-              <BookingForm 
-                vehicleCategory={vehicle.type} 
-                vehicleId={vehicle.id} 
-                onSuccess={() => setShowBookingModal(false)}
-              />
-            </div>
-          </div>
-        </div>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Book {vehicle.brand} {vehicle.name}</DialogTitle>
+          </DialogHeader>
+          
+          <BookingForm 
+            vehicleCategory={vehicle.type} 
+            vehicleId={vehicle.id} 
+            onSuccess={() => setShowBookingModal(false)}
+          />
+        </DialogContent>
       </Dialog>
     </>
   );

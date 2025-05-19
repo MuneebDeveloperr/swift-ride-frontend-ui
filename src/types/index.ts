@@ -1,11 +1,5 @@
 
-// Extend the existing types file to include profile and role properties
-// Note: This assumes there's already a User type defined in this file
-// We're adding to it rather than redefining it completely
-
-// If the User type already exists in this file, we're extending it
-// If not, we're creating it
-
+// User and Profile types
 export interface User {
   id: string;
   name: string;
@@ -23,4 +17,62 @@ export interface UserProfile {
   province?: string;
   city?: string;
   postalCode?: string;
+}
+
+// Vehicle related types
+export interface VehicleType {
+  id: string;
+  name: string;
+  brand: string;
+  category: 'car' | 'bus' | 'minibus' | 'coaster';
+  price: number;
+  seats: number;
+  transmission: 'manual' | 'automatic';
+  fuelType: 'petrol' | 'diesel' | 'hybrid' | 'electric';
+  features: string[];
+  image: string;
+  availability: boolean;
+  rating: number;
+  reviews: number;
+}
+
+// Booking related types
+export type RentalPlan = '12hour' | '2day' | '3day';
+
+export interface BookingFormData {
+  pickupLocation: string;
+  dropLocation: string;
+  pickupDate: string;
+  pickupTime: string;
+  returnDate: string;
+  returnTime: string;
+  rentalPlan: RentalPlan;
+  withDriver: boolean;
+  specialInstructions?: string;
+}
+
+export interface Booking {
+  id: string;
+  userId: string;
+  vehicleId: string;
+  vehicleName: string;
+  vehicleBrand: string;
+  pickupLocation: string;
+  dropLocation: string;
+  pickupDateTime: string;
+  returnDateTime: string;
+  rentalPlan: RentalPlan;
+  withDriver: boolean;
+  totalPrice: number;
+  status: 'upcoming' | 'completed' | 'cancelled';
+  paymentStatus: 'pending' | 'completed' | 'failed';
+  createdAt: string;
+}
+
+// Chat related types
+export interface Message {
+  id: string;
+  text: string;
+  sender: 'user' | 'system';
+  timestamp: string;
 }

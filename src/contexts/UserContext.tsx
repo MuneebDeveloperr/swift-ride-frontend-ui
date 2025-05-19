@@ -1,7 +1,4 @@
 
-// This is just to ensure the UserContext is properly typed
-// Assuming the UserContext already exists and we're just adding types
-
 import React, { createContext, useContext, useState } from "react";
 import { User } from "@/types";
 
@@ -12,7 +9,8 @@ type UserContextType = {
   updateUser: (userData: Partial<User>) => void;
 };
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
+// Export the context itself
+export const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);

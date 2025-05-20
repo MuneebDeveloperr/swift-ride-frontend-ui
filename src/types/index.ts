@@ -24,13 +24,13 @@ export interface VehicleType {
   id: string;
   name: string;
   brand: string;
-  category: 'car' | 'bus' | 'minibus' | 'coaster';
+  category?: 'car' | 'bus' | 'minibus' | 'coaster';
   image: string;
-  seats: number;
-  price: number;
+  seats?: number;
+  price?: number;
   location: string;
   features: string[];
-  availability: boolean;
+  availability?: boolean;
   // Additional properties
   transmission?: 'manual' | 'automatic';
   fuelType?: 'petrol' | 'diesel' | 'hybrid' | 'electric';
@@ -40,9 +40,9 @@ export interface VehicleType {
   pricePerHour?: number;
   pricePerDay?: number;
   // Properties being used in mockData and VehicleCard
-  type?: 'car' | 'bus' | 'minibus' | 'coaster';
-  seatingCapacity?: number;
-  available?: boolean;
+  type: 'car' | 'bus' | 'minibus' | 'coaster';
+  seatingCapacity: number;
+  available: boolean;
 }
 
 // Booking related types

@@ -39,6 +39,10 @@ export interface VehicleType {
   isPremium?: boolean;
   pricePerHour?: number;
   pricePerDay?: number;
+  // Properties being used in mockData and VehicleCard
+  type?: 'car' | 'bus' | 'minibus' | 'coaster';
+  seatingCapacity?: number;
+  available?: boolean;
 }
 
 // Booking related types

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { useUser } from "@/contexts/UserContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { provinces, cities } from "@/data/locationData";
+import { provinces, cities, locationData } from "@/data/locationData";
 import { UserProfile } from "@/types";
 
 const Profile = () => {
@@ -41,7 +41,7 @@ const Profile = () => {
         
         // Set available cities based on province
         if (user.profile.province) {
-          setAvailableCities(cities[user.profile.province as keyof typeof cities] || []);
+          setAvailableCities(locationData[user.profile.province as keyof typeof locationData] || []);
         }
       }
     }
@@ -73,7 +73,7 @@ const Profile = () => {
     // Handle province change to update city dropdown
     if (name === "province") {
       setFormData(prev => ({ ...prev, [name]: value, city: "" }));
-      setAvailableCities(cities[value as keyof typeof cities] || []);
+      setAvailableCities(locationData[value as keyof typeof locationData] || []);
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }

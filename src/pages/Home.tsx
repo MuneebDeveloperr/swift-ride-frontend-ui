@@ -19,17 +19,19 @@ const Home = () => {
 
       <Navbar />
       
-      <main className="pt-16">
+      <main>
         <Hero />
         
         <VehicleCategories />
         
-        {/* Replaced Booking Section with Informative Content */}
+        {/* Redesigned Booking Section */}
         <section className="py-16 bg-white">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <h2 className="text-3xl font-bold mb-10 text-center">Book Your Vehicle Now</h2>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
+              {/* Left section - Feature list */}
               <div>
-                <h2 className="text-3xl font-bold mb-6">Book Your Vehicle Now</h2>
                 <p className="text-gray-600 mb-8">
                   At Swift Ride, we make vehicle rental easy and affordable for everyone. With a wide selection of cars, buses, mini buses, and coasters, you're sure to find the perfect vehicle for your needs.
                 </p>
@@ -75,51 +77,51 @@ const Home = () => {
                     </div>
                   </div>
                 </div>
-
-                <div className="mt-8">
-                  <Link to="/cars" className="btn-primary">Explore Vehicles</Link>
-                </div>
               </div>
               
-              <div>
-                <div className="bg-gray-50 rounded-lg p-6 shadow-lg">
-                  <h3 className="text-xl font-semibold mb-4">How It Works</h3>
+              {/* Right section - How It Works */}
+              <div className="bg-gray-50 rounded-lg p-6 shadow-lg">
+                <div className="space-y-6">
+                  <div className="flex items-start">
+                    <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">1</div>
+                    <div>
+                      <h4 className="font-medium mb-1">Choose Your Vehicle</h4>
+                      <p className="text-gray-600">Browse our extensive fleet and select the vehicle that meets your needs.</p>
+                    </div>
+                  </div>
                   
-                  <div className="space-y-6">
-                    <div className="flex items-start">
-                      <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">1</div>
-                      <div>
-                        <h4 className="font-medium mb-1">Choose Your Vehicle</h4>
-                        <p className="text-gray-600">Browse our extensive fleet and select the vehicle that meets your needs.</p>
-                      </div>
+                  <div className="flex items-start">
+                    <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">2</div>
+                    <div>
+                      <h4 className="font-medium mb-1">Select Rental Details</h4>
+                      <p className="text-gray-600">Pick your rental duration, driver option, and specify your locations.</p>
                     </div>
-                    
-                    <div className="flex items-start">
-                      <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">2</div>
-                      <div>
-                        <h4 className="font-medium mb-1">Select Rental Details</h4>
-                        <p className="text-gray-600">Pick your rental duration, driver option, and specify your locations.</p>
-                      </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">3</div>
+                    <div>
+                      <h4 className="font-medium mb-1">Complete Booking</h4>
+                      <p className="text-gray-600">Fill in your details, confirm your booking, and make a secure payment.</p>
                     </div>
-                    
-                    <div className="flex items-start">
-                      <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">3</div>
-                      <div>
-                        <h4 className="font-medium mb-1">Complete Booking</h4>
-                        <p className="text-gray-600">Fill in your details, confirm your booking, and make a secure payment.</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start">
-                      <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">4</div>
-                      <div>
-                        <h4 className="font-medium mb-1">Enjoy Your Ride</h4>
-                        <p className="text-gray-600">Pick up your vehicle at the scheduled time and enjoy your journey!</p>
-                      </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">4</div>
+                    <div>
+                      <h4 className="font-medium mb-1">Enjoy Your Ride</h4>
+                      <p className="text-gray-600">Pick up your vehicle at the scheduled time and enjoy your journey!</p>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
+            
+            {/* Centered Explore Vehicles Button */}
+            <div className="flex justify-center mt-8">
+              <Link to="/cars" className="btn-primary text-lg px-8 py-3">
+                Explore Vehicles
+              </Link>
             </div>
           </div>
         </section>

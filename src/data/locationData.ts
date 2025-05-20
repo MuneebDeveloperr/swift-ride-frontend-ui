@@ -2,7 +2,7 @@
 export const provinces = [
   "Punjab",
   "Sindh",
-  "Khyber Pakhtunkhwa",
+  "KPK",
   "Balochistan",
   "Islamabad Capital Territory",
   "Gilgit-Baltistan",
@@ -13,44 +13,62 @@ export const cities: Record<string, string[]> = {
   "Punjab": [
     "Lahore", 
     "Faisalabad", 
-    "Rawalpindi", 
     "Multan", 
-    "Bahawalpur", 
     "Gujranwala", 
+    "Sargodha", 
+    "Bahawalpur", 
     "Sialkot", 
-    "Sheikhupura",
-    "Sargodha",
-    "Sahiwal"
+    "Dera Ghazi Khan", 
+    "Sheikhupura", 
+    "Kasur", 
+    "Okara", 
+    "Jhelum", 
+    "Rajanpur", 
+    "Mandi Bahauddin", 
+    "Narowal", 
+    "Layyah", 
+    "Muzaffargarh", 
+    "Lodhran", 
+    "Toba Tek Singh", 
+    "Khanewal", 
+    "Chakwal"
   ],
   "Sindh": [
     "Karachi", 
     "Hyderabad", 
     "Sukkur", 
     "Larkana", 
-    "Nawabshah", 
-    "Mirpur Khas",
-    "Jacobabad",
-    "Shikarpur"
+    "Mirpur Khas", 
+    "Nawabshah (Shaheed Benazirabad)", 
+    "Dadu", 
+    "Jacobabad", 
+    "Shikarpur", 
+    "Thatta", 
+    "Badin", 
+    "Jamshoro"
   ],
-  "Khyber Pakhtunkhwa": [
+  "KPK": [
     "Peshawar", 
     "Mardan", 
     "Abbottabad", 
     "Swat", 
+    "Kohat", 
     "Dera Ismail Khan", 
-    "Nowshera",
-    "Kohat",
-    "Swabi"
+    "Bannu", 
+    "Charsadda", 
+    "Mansehra", 
+    "Nowshera"
   ],
   "Balochistan": [
     "Quetta", 
+    "Khuzdar", 
     "Gwadar", 
+    "Zhob", 
     "Turbat", 
-    "Chaman", 
     "Sibi", 
-    "Zhob",
-    "Khuzdar",
-    "Loralai"
+    "Loralai", 
+    "Chaman", 
+    "Nasirabad"
   ],
   "Islamabad Capital Territory": ["Islamabad"],
   "Gilgit-Baltistan": [
@@ -68,3 +86,28 @@ export const cities: Record<string, string[]> = {
     "Bhimber"
   ]
 };
+
+export const majorCities = [
+  "Karachi", 
+  "Lahore", 
+  "Faisalabad", 
+  "Rawalpindi", 
+  "Islamabad",
+  "Gujranwala", 
+  "Peshawar", 
+  "Multan", 
+  "Sialkot", 
+  "Quetta",
+  "Bahawalpur", 
+  "Sargodha", 
+  "Mardan", 
+  "Gujrat", 
+  "Sheikhupura"
+];
+
+export const timeOptions = [
+  "12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM",
+  "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
+  "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM",
+  "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"
+];

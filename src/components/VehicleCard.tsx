@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { VehicleType, RentalPlan } from "@/types";
 import { calculatePrice } from "@/utils/pricing";
+import { Badge } from "@/components/ui/badge";
 
 interface VehicleCardProps {
   vehicle: VehicleType;
@@ -20,7 +21,11 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
     setWithDriver(e.target.value === "with");
   };
 
-  const price = calculatePrice(vehicle.type, selectedPlan, withDriver);
+  // Apply premium pricing for premium brands
+  const isPremiumBrand = ["BMW", "Audi", "Mercedes", "MG"].includes(vehicle.brand);
+  const premiumMultiplier = isPremiumBrand ? 1.5 : 1;
+  
+  const price = calculatePrice(vehicle.type, selectedPlan, withDriver) * premiumMultiplier;
 
   // Clear any potential booking state from localStorage on component mount
   useEffect(() => {
@@ -45,12 +50,19 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
             </span>
           </div>
         )}
-        {/* Added availability badge for available vehicles */}
-        {vehicle.available && (
-          <div className="absolute top-0 right-0 m-3">
-            <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-              Available
-            </span>
+        {/* Availability badge */}
+        <div className="absolute top-0 right-0 m-3">
+          {vehicle.available ? (
+            <Badge variant="default" className="bg-green-500 hover:bg-green-600">Available</Badge>
+          ) : (
+            <Badge variant="secondary" className="bg-gray-500 hover:bg-gray-600">Unavailable</Badge>
+          )}
+        </div>
+        
+        {/* Premium badge for premium brands */}
+        {isPremiumBrand && (
+          <div className="absolute top-0 left-0 m-3">
+            <Badge variant="default" className="bg-amber-500 hover:bg-amber-600">Premium</Badge>
           </div>
         )}
       </div>
@@ -75,7 +87,14 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
             <span className="text-sm">{vehicle.seatingCapacity} Seats</span>
           </div>
           <div className="text-lg font-bold text-primary">
-            PKR {price.toLocaleString()}
+            {isPremiumBrand ? (
+              <div className="flex flex-col items-end">
+                <span className="text-sm text-gray-600">Starting from</span>
+                <span>PKR {price.toLocaleString()}</span>
+              </div>
+            ) : (
+              <span>PKR {price.toLocaleString()}</span>
+            )}
           </div>
         </div>
 
@@ -108,7 +127,7 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
           </div>
         </div>
 
-        {/* Book Button - Changed to Link to new booking page */}
+        {/* Book Button - Changed label to Book Now */}
         <Link 
           to={vehicle.available ? `/booking/${vehicle.id}?plan=${selectedPlan}&driver=${withDriver ? 'true' : 'false'}` : "#"}
           className={`w-full py-2 px-4 rounded font-medium text-center block ${

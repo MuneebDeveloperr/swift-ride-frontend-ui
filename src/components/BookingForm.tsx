@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { BookingFormData, RentalPlan } from "@/types";
 import { calculatePrice } from "@/utils/pricing";
+import { majorCities, timeOptions } from "@/data/locationData";
 
 interface BookingFormProps {
   vehicleCategory: "car" | "bus" | "minibus" | "coaster";
@@ -177,34 +178,42 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
             />
           </div>
           
-          {/* Location Information */}
+          {/* Location Information - Updated to use dropdowns with city list */}
           <div>
             <label className="form-label" htmlFor="pickupLocation">Pickup Location</label>
-            <input
-              type="text"
+            <select
               id="pickupLocation"
               name="pickupLocation"
               className="form-input"
               value={formData.pickupLocation}
               onChange={handleChange}
               required
-            />
+            >
+              <option value="">Select Pickup Location</option>
+              {majorCities.map((city) => (
+                <option key={`pickup-${city}`} value={city}>{city}</option>
+              ))}
+            </select>
           </div>
           
           <div>
             <label className="form-label" htmlFor="dropLocation">Drop-off Location</label>
-            <input
-              type="text"
+            <select
               id="dropLocation"
               name="dropLocation"
               className="form-input"
               value={formData.dropLocation}
               onChange={handleChange}
               required
-            />
+            >
+              <option value="">Select Drop-off Location</option>
+              {majorCities.map((city) => (
+                <option key={`dropoff-${city}`} value={city}>{city}</option>
+              ))}
+            </select>
           </div>
           
-          {/* Date and Time */}
+          {/* Date and Time - Updated time with dropdown */}
           <div>
             <label className="form-label" htmlFor="pickupDate">Pickup Date</label>
             <input
@@ -220,15 +229,19 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
           
           <div>
             <label className="form-label" htmlFor="pickupTime">Pickup Time</label>
-            <input
-              type="time"
+            <select
               id="pickupTime"
               name="pickupTime"
               className="form-input"
               value={formData.pickupTime}
               onChange={handleChange}
               required
-            />
+            >
+              <option value="">Select Pickup Time</option>
+              {timeOptions.map((time) => (
+                <option key={`pickup-${time}`} value={time}>{time}</option>
+              ))}
+            </select>
           </div>
           
           <div>
@@ -246,15 +259,19 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
           
           <div>
             <label className="form-label" htmlFor="returnTime">Return Time</label>
-            <input
-              type="time"
+            <select
               id="returnTime"
               name="returnTime"
               className="form-input"
               value={formData.returnTime}
               onChange={handleChange}
               required
-            />
+            >
+              <option value="">Select Return Time</option>
+              {timeOptions.map((time) => (
+                <option key={`return-${time}`} value={time}>{time}</option>
+              ))}
+            </select>
           </div>
           
           {/* Rental Options */}

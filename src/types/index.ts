@@ -41,6 +41,7 @@ export interface VehicleType {
   availability?: boolean;
   rating?: number;
   reviews?: number;
+  isPremium?: boolean;
 }
 
 // Booking related types
@@ -89,7 +90,11 @@ export interface Message {
   id: string;
   sender: 'user' | 'system' | 'admin';
   timestamp: string;
-  // Support both content and text properties for flexibility
   content?: string;
   text?: string;
 }
+
+// Location data types
+export type Province = 'Punjab' | 'Sindh' | 'KPK' | 'Balochistan' | 'Islamabad Capital Territory' | 'Gilgit-Baltistan' | 'Azad Jammu & Kashmir';
+export type City = string;
+export type LocationData = Record<Province, City[]>;

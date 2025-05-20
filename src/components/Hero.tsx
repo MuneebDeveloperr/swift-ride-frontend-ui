@@ -29,7 +29,7 @@ const Hero = () => {
           
           <div className="flex flex-wrap gap-4">
             <Link to="/cars" className="btn-primary text-lg">
-              Rent a Car
+              Book Now
             </Link>
             <Link to="/buses" className="btn-outline text-lg">
               View All Vehicles

@@ -1,9 +1,11 @@
+
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useUser } from "@/contexts/UserContext";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { provinces, cities } from "@/data/locationData";
 import { UserProfile } from "@/types";
 
@@ -79,6 +81,18 @@ const Profile = () => {
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate that province and city are selected
+    if (!formData.province) {
+      toast.error("Please select a province");
+      return;
+    }
+    
+    if (!formData.city) {
+      toast.error("Please select a city");
+      return;
+    }
+    
     setIsLoading(true);
     
     // Simulate API call
@@ -214,13 +228,14 @@ const Profile = () => {
                   
                   {/* Province */}
                   <div>
-                    <label htmlFor="province" className="block text-sm font-medium text-gray-700">Province</label>
+                    <label htmlFor="province" className="block text-sm font-medium text-gray-700">Province <span className="text-red-500">*</span></label>
                     <select
                       id="province"
                       name="province"
                       value={formData.province}
                       onChange={handleChange}
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                      required
                     >
                       <option value="">Select Province</option>
                       {provinces.map(province => (
@@ -229,9 +244,9 @@ const Profile = () => {
                     </select>
                   </div>
                   
-                  {/* City - New field */}
+                  {/* City - Updated with dynamic options based on province */}
                   <div>
-                    <label htmlFor="city" className="block text-sm font-medium text-gray-700">City</label>
+                    <label htmlFor="city" className="block text-sm font-medium text-gray-700">City <span className="text-red-500">*</span></label>
                     <select
                       id="city"
                       name="city"
@@ -239,6 +254,7 @@ const Profile = () => {
                       onChange={handleChange}
                       className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
                       disabled={!formData.province}
+                      required
                     >
                       <option value="">Select City</option>
                       {availableCities.map(city => (
@@ -288,6 +304,8 @@ const Profile = () => {
           </div>
         </div>
       </main>
+      
+      <Footer />
     </>
   );
 };

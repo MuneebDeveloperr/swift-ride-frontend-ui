@@ -87,7 +87,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-semibold mb-1">Our Office</h3>
-                      <p className="text-gray-600">123 Main Street, Karachi, Pakistan</p>
+                      <p className="text-gray-600">General Bus Stand Faisalabad, Pakistan</p>
                     </div>
                   </div>
                   
@@ -240,27 +240,22 @@ const Contact = () => {
             <div className="max-w-3xl mx-auto text-center mb-12">
               <h2 className="text-3xl font-bold mb-6">Our Location</h2>
               <p className="text-gray-600">
-                Visit our office to speak with our team in person. We're conveniently located in the heart of Karachi.
+                Visit us at the General Bus Stand Faisalabad to speak with our team in person.
               </p>
             </div>
             
             <div className="rounded-lg overflow-hidden shadow-md">
               {/* Embed Google Maps iframe */}
-              <div className="h-96 bg-gray-200 flex items-center justify-center">
-                <div className="text-center">
-                  <i className="fas fa-map-marker-alt text-primary text-5xl mb-4"></i>
-                  <p className="text-xl font-semibold">Map Placeholder</p>
-                  <p className="text-gray-600">123 Main Street, Karachi, Pakistan</p>
-                </div>
-                {/* In a real implementation, you would use:
+              <div className="h-96">
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=..."
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3405.1251869413726!2d73.10764841546115!3d31.410605281409738!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x392242a79d1f3349%3A0x69a2c4fce5bd9d7f!2sGeneral%20Bus%20Stand%2C%20Faisalabad%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1653544635204!5m2!1sen!2s"
                   width="100%" 
                   height="100%" 
                   style={{ border: 0 }} 
                   allowFullScreen
                   loading="lazy"
-                ></iframe> */}
+                  title="Swift Ride Location"
+                ></iframe>
               </div>
             </div>
           </div>

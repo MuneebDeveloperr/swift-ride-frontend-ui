@@ -25,6 +25,8 @@ import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import BookingPage from "./pages/BookingPage";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 
 // Components
 import ScrollToTop from "./components/ScrollToTop";
@@ -85,6 +87,8 @@ const App = () => {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatWidget />

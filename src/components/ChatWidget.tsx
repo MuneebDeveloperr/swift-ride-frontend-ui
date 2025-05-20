@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useUser } from "@/contexts/UserContext";
 import { Message } from "@/types";
 import { v4 as uuidv4 } from "uuid";
+import { toast } from "sonner";
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +19,7 @@ const ChatWidget = () => {
       const initialMessage: Message = {
         id: uuidv4(),
         sender: "admin",
-        content: "Hello! How can I assist you with your vehicle rental today?",
+        text: "Hello! How can I assist you with your vehicle rental today?",
         timestamp: new Date().toISOString(),
       };
       setMessages([initialMessage]);
@@ -47,7 +48,7 @@ const ChatWidget = () => {
     const userMessage: Message = {
       id: uuidv4(),
       sender: "user",
-      content: newMessage,
+      text: newMessage,
       timestamp: new Date().toISOString(),
     };
 
@@ -69,7 +70,7 @@ const ChatWidget = () => {
       const adminMessage: Message = {
         id: uuidv4(),
         sender: "admin",
-        content: randomResponse,
+        text: randomResponse,
         timestamp: new Date().toISOString(),
       };
 
@@ -82,6 +83,13 @@ const ChatWidget = () => {
     if (!isOpen) {
       setUnreadCount(0);
     }
+  };
+
+  // Clear conversation function
+  const clearConversation = () => {
+    setMessages([]);
+    // This will trigger the useEffect to add the initial message again
+    toast.success("Chat conversation cleared");
   };
 
   return (
@@ -109,9 +117,22 @@ const ChatWidget = () => {
           {/* Chat Header */}
           <div className="bg-primary text-white p-4 flex justify-between items-center">
             <h3 className="font-semibold">Swift Ride Support</h3>
-            <button onClick={toggleChat} className="text-white focus:outline-none">
-              <i className="fas fa-times"></i>
-            </button>
+            <div className="flex items-center space-x-2">
+              <button 
+                onClick={clearConversation} 
+                className="text-white hover:bg-primary-dark rounded-full p-1 focus:outline-none"
+                title="Clear conversation"
+              >
+                <i className="fas fa-trash-alt"></i>
+              </button>
+              <button 
+                onClick={toggleChat} 
+                className="text-white hover:bg-primary-dark rounded-full p-1 focus:outline-none"
+                title="Close chat"
+              >
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
           </div>
 
           {/* Chat Messages */}
@@ -130,7 +151,7 @@ const ChatWidget = () => {
                       : "bg-gray-200 text-gray-800 rounded-tl-none"
                   }`}
                 >
-                  <p className="text-sm">{message.content}</p>
+                  <p className="text-sm">{message.text}</p>
                   <p className="text-xs mt-1 opacity-70">
                     {new Date(message.timestamp).toLocaleTimeString([], {
                       hour: "2-digit",

@@ -57,8 +57,6 @@ export interface BookingFormData {
   pickupTime: string;
   returnDate: string;
   returnTime: string;
-  pickupDateTime?: string;
-  returnDateTime?: string;
   vehicleCategory?: 'car' | 'bus' | 'minibus' | 'coaster';
   rentalPlan: RentalPlan;
   withDriver: boolean;
@@ -90,8 +88,7 @@ export interface Message {
   id: string;
   sender: 'user' | 'system' | 'admin';
   timestamp: string;
-  content?: string;
-  text?: string;
+  text: string;
 }
 
 // Location data types

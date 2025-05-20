@@ -327,32 +327,6 @@ const Settings = () => {
                     Submit Feedback
                   </button>
                 </form>
-                
-                <div className="mt-8 border-t border-gray-200 pt-6">
-                  <h3 className="font-medium mb-4">Need Help?</h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <a href="#" className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100">
-                      <div className="rounded-full bg-blue-100 p-3 mr-4">
-                        <i className="fas fa-book text-blue-600"></i>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Help Center</h4>
-                        <p className="text-sm text-gray-600">Browse our knowledge base</p>
-                      </div>
-                    </a>
-                    
-                    <a href="#" className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100">
-                      <div className="rounded-full bg-green-100 p-3 mr-4">
-                        <i className="fas fa-headset text-green-600"></i>
-                      </div>
-                      <div>
-                        <h4 className="font-medium">Contact Support</h4>
-                        <p className="text-sm text-gray-600">Get help from our team</p>
-                      </div>
-                    </a>
-                  </div>
-                </div>
               </div>
             </div>
           </div>

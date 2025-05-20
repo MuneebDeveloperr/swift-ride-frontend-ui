@@ -245,16 +245,18 @@ const Contact = () => {
             </div>
             
             <div className="rounded-lg overflow-hidden shadow-md">
-              {/* Embed Google Maps iframe */}
-              <div className="h-96">
+              {/* Updated Google Maps iframe */}
+              <div className="w-full h-96">
                 <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3405.1251869413726!2d73.10764841546115!3d31.410605281409738!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x392242a79d1f3349%3A0x69a2c4fce5bd9d7f!2sGeneral%20Bus%20Stand%2C%20Faisalabad%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1653544635204!5m2!1sen!2s"
+                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d10940.472175652128!2d73.09774300000001!3d31.42816!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x392268238e367c67%3A0xb3e7054b85374e6c!2z2YTYp9ix24wg2KfaiNuB!5e1!3m2!1sen!2sus!4v1747734219398!5m2!1sen!2sus"
                   width="100%" 
                   height="100%" 
                   style={{ border: 0 }} 
                   allowFullScreen
                   loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
                   title="Swift Ride Location"
+                  className="w-full h-full"
                 ></iframe>
               </div>
             </div>

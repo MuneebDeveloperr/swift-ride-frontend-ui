@@ -41,9 +41,18 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
     vehicleId,
   });
 
+  // Shared Ride State
+  const [enableSharedRide, setEnableSharedRide] = useState(false);
+  const [sharedRiderInfo, setSharedRiderInfo] = useState({
+    name: "",
+    phone: "",
+    email: "",
+  });
+
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [price, setPrice] = useState<number | null>(null);
+  const [pricePerRider, setPricePerRider] = useState<number | null>(null);
 
   // Calculate estimated price when rental plan or driver option changes
   const updatePrice = () => {
@@ -53,12 +62,19 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
       formData.withDriver
     );
     setPrice(calculatedPrice);
+    
+    // Calculate price per rider if shared ride is enabled
+    if (enableSharedRide) {
+      setPricePerRider(calculatedPrice / 2);
+    } else {
+      setPricePerRider(null);
+    }
   };
 
   // Update price when relevant form fields change
   useEffect(() => {
     updatePrice();
-  }, [formData.rentalPlan, formData.withDriver]);
+  }, [formData.rentalPlan, formData.withDriver, enableSharedRide]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -80,6 +96,18 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
     setFormData((prev) => ({ ...prev, withDriver }));
   };
 
+  const handleSharedRiderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSharedRiderInfo(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSharedRideToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEnableSharedRide(e.target.checked);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -88,6 +116,12 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
         !formData.pickupLocation || !formData.dropLocation || 
         !formData.pickupDate || !formData.returnDate) {
       toast.error("Please fill in all required fields");
+      return;
+    }
+
+    // Validate shared rider info if shared ride is enabled
+    if (enableSharedRide && (!sharedRiderInfo.name || !sharedRiderInfo.phone)) {
+      toast.error("Please fill in all shared rider information");
       return;
     }
     
@@ -124,6 +158,12 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
         notes: "",
         vehicleId,
       });
+      setEnableSharedRide(false);
+      setSharedRiderInfo({
+        name: "",
+        phone: "",
+        email: "",
+      });
       
       // Call success callback if provided
       if (onSuccess) {
@@ -131,6 +171,9 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
       }
     }, 1500);
   };
+
+  // Check if vehicle category supports shared rides
+  const isSharedRideSupported = ["car", "minibus", "coaster"].includes(vehicleCategory);
 
   return (
     <>
@@ -320,15 +363,95 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
           </div>
         </div>
         
+        {/* Shared Ride Option */}
+        {isSharedRideSupported && (
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h4 className="font-semibold text-blue-800">Shared Ride Option</h4>
+                <p className="text-sm text-blue-600">Split the cost with a friend</p>
+              </div>
+              <label className="relative inline-flex items-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="sr-only peer"
+                  checked={enableSharedRide}
+                  onChange={handleSharedRideToggle}
+                />
+                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+              </label>
+            </div>
+            
+            {enableSharedRide && (
+              <div className="space-y-4 mt-4 border-t border-blue-200 pt-4">
+                <p className="text-sm text-blue-700 mb-3">
+                  You and your friend will both receive booking confirmation and split payment.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="form-label text-sm" htmlFor="sharedRiderName">Friend's Name</label>
+                    <input
+                      type="text"
+                      id="sharedRiderName"
+                      name="name"
+                      className="form-input"
+                      value={sharedRiderInfo.name}
+                      onChange={handleSharedRiderChange}
+                      required={enableSharedRide}
+                    />
+                  </div>
+                  <div>
+                    <label className="form-label text-sm" htmlFor="sharedRiderPhone">Friend's Phone</label>
+                    <input
+                      type="tel"
+                      id="sharedRiderPhone"
+                      name="phone"
+                      className="form-input"
+                      value={sharedRiderInfo.phone}
+                      onChange={handleSharedRiderChange}
+                      required={enableSharedRide}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="form-label text-sm" htmlFor="sharedRiderEmail">Friend's Email (Optional)</label>
+                    <input
+                      type="email"
+                      id="sharedRiderEmail"
+                      name="email"
+                      className="form-input"
+                      value={sharedRiderInfo.email}
+                      onChange={handleSharedRiderChange}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        
         {/* Price Display */}
         {price !== null && (
           <div className="mt-4 p-3 bg-gray-100 rounded-md">
             <div className="flex justify-between items-center">
               <span className="font-medium">Estimated Price:</span>
               <span className="text-xl font-bold text-primary">
-                PKR {price.toLocaleString()}
+                PKR {enableSharedRide ? `${pricePerRider?.toLocaleString()} per person` : price.toLocaleString()}
               </span>
             </div>
+            
+            {enableSharedRide && pricePerRider !== null && (
+              <div className="border-t border-gray-300 mt-2 pt-2">
+                <div className="flex justify-between text-sm">
+                  <span>Total booking price:</span>
+                  <span className="font-medium">PKR {price.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span>Split equally (50% each):</span>
+                  <span className="font-medium">PKR {pricePerRider.toLocaleString()} × 2 people</span>
+                </div>
+              </div>
+            )}
+            
             <div className="text-xs text-gray-500 mt-1">
               Price for {formData.rentalPlan === "12hour" ? "12 Hours" : 
                          formData.rentalPlan === "2day" ? "2 Days" : "3 Days"} 
@@ -371,7 +494,22 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
                 <p><span className="font-medium">Driver:</span> {formData.withDriver ? "With Driver" : "Without Driver"}</p>
                 <p><span className="font-medium">Pickup:</span> {formData.pickupLocation}</p>
                 <p><span className="font-medium">Drop-off:</span> {formData.dropLocation}</p>
-                <p className="text-xl font-bold text-primary">Total: PKR {price?.toLocaleString()}</p>
+                
+                {enableSharedRide && (
+                  <div className="bg-blue-50 p-3 rounded-md border border-blue-200 mt-2">
+                    <p className="font-medium text-blue-800 mb-1">Shared Ride</p>
+                    <p><span className="font-medium">Co-passenger:</span> {sharedRiderInfo.name}</p>
+                    <p><span className="font-medium">Your price:</span> PKR {pricePerRider?.toLocaleString()}</p>
+                    <p className="text-xs text-blue-600 mt-1">Both passengers will receive booking confirmation.</p>
+                  </div>
+                )}
+                
+                <p className="text-xl font-bold text-primary mt-4">
+                  {enableSharedRide 
+                    ? `Your Share: PKR ${pricePerRider?.toLocaleString()}` 
+                    : `Total: PKR ${price?.toLocaleString()}`
+                  }
+                </p>
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>

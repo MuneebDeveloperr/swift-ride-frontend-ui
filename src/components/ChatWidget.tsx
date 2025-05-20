@@ -119,13 +119,6 @@ const ChatWidget = () => {
             <h3 className="font-semibold">Swift Ride Support</h3>
             <div className="flex items-center space-x-2">
               <button 
-                onClick={clearConversation} 
-                className="text-white hover:bg-primary-dark rounded-full p-1 focus:outline-none"
-                title="Clear conversation"
-              >
-                <i className="fas fa-trash-alt"></i>
-              </button>
-              <button 
                 onClick={toggleChat} 
                 className="text-white hover:bg-primary-dark rounded-full p-1 focus:outline-none"
                 title="Close chat"
@@ -161,6 +154,17 @@ const ChatWidget = () => {
                 </div>
               </div>
             ))}
+
+            {/* Clear conversation button - repositioned to bottom */}
+            <div className="text-center mt-4 mb-2">
+              <button
+                onClick={clearConversation}
+                className="text-sm text-gray-500 hover:text-primary opacity-50 hover:opacity-100 transition-opacity"
+              >
+                Clear conversation
+              </button>
+            </div>
+            
             <div ref={messagesEndRef}></div>
           </div>
 

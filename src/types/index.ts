@@ -24,24 +24,21 @@ export interface VehicleType {
   id: string;
   name: string;
   brand: string;
-  type: 'car' | 'bus' | 'minibus' | 'coaster';
+  category: 'car' | 'bus' | 'minibus' | 'coaster';
   image: string;
-  seatingCapacity: number;
-  pricePerHour: number;
-  pricePerDay: number;
+  seats: number;
+  price: number;
   location: string;
   features: string[];
-  available: boolean;
+  availability: boolean;
   // Additional properties
-  category?: 'car' | 'bus' | 'minibus' | 'coaster';
-  price?: number;
-  seats?: number;
   transmission?: 'manual' | 'automatic';
   fuelType?: 'petrol' | 'diesel' | 'hybrid' | 'electric';
-  availability?: boolean;
   rating?: number;
   reviews?: number;
   isPremium?: boolean;
+  pricePerHour?: number;
+  pricePerDay?: number;
 }
 
 // Booking related types

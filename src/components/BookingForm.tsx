@@ -282,7 +282,7 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
             >
               <option value="">Select Pickup Time</option>
               {timeOptions.map((time) => (
-                <option key={`pickup-${time}`} value={time}>{time}</option>
+                <option key={`pickup-time-${time}`} value={time}>{time}</option>
               ))}
             </select>
           </div>
@@ -312,7 +312,7 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
             >
               <option value="">Select Return Time</option>
               {timeOptions.map((time) => (
-                <option key={`return-${time}`} value={time}>{time}</option>
+                <option key={`return-time-${time}`} value={time}>{time}</option>
               ))}
             </select>
           </div>
@@ -379,6 +379,7 @@ const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps
                   onChange={handleSharedRideToggle}
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                <span className="ml-3 text-sm font-medium">Enable Ride Share</span>
               </label>
             </div>
             

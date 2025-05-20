@@ -9,6 +9,7 @@ import { calculatePrice } from "@/utils/pricing";
 import { toast } from "sonner";
 import { useUser } from "@/contexts/UserContext";
 import { carsData, busesData, coastersData, miniBusesData } from "@/data/mockData";
+import { majorCities, timeOptions } from "@/data/locationData";
 
 const BookingPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +35,14 @@ const BookingPage = () => {
     notes: ""
   });
   
+  // Shared Ride State
+  const [enableSharedRide, setEnableSharedRide] = useState(false);
+  const [sharedRiderInfo, setSharedRiderInfo] = useState({
+    name: "",
+    phone: "",
+    email: "",
+  });
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Find the vehicle data
@@ -57,7 +66,7 @@ const BookingPage = () => {
   const calculateTotalPrice = () => {
     if (!vehicle) return 0;
     return calculatePrice(
-      vehicle.type, 
+      vehicle.category, 
       formData.rentalPlan as RentalPlan, 
       formData.withDriver
     );
@@ -74,6 +83,18 @@ const BookingPage = () => {
       withDriver: e.target.value === "with" 
     }));
   };
+
+  const handleSharedRiderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSharedRiderInfo(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSharedRideToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEnableSharedRide(e.target.checked);
+  };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,6 +108,12 @@ const BookingPage = () => {
       return;
     }
     
+    // Validate shared rider info if shared ride is enabled
+    if (enableSharedRide && (!sharedRiderInfo.name || !sharedRiderInfo.phone)) {
+      toast.error("Please fill in all shared rider information");
+      return;
+    }
+    
     setIsSubmitting(true);
     
     // Simulate API call
@@ -97,6 +124,15 @@ const BookingPage = () => {
       setIsSubmitting(false);
       navigate("/dashboard");
     }, 1500);
+  };
+
+  // Check if vehicle category supports shared rides
+  const isSharedRideSupported = vehicle?.category ? ["car", "minibus", "coaster"].includes(vehicle.category) : false;
+  
+  // Calculate price per rider
+  const getPricePerRider = () => {
+    const totalPrice = calculateTotalPrice();
+    return enableSharedRide ? totalPrice / 2 : totalPrice;
   };
   
   if (loading) {
@@ -179,12 +215,12 @@ const BookingPage = () => {
                   
                   <div className="flex items-center">
                     <i className="fas fa-users text-primary mr-2"></i>
-                    <span>{vehicle.seatingCapacity} Seats</span>
+                    <span>{vehicle.seats} Seats</span>
                   </div>
                   
                   <div className="flex items-center">
                     <i className="fas fa-tag text-primary mr-2"></i>
-                    <span>{vehicle.type.charAt(0).toUpperCase() + vehicle.type.slice(1)}</span>
+                    <span>{vehicle.category.charAt(0).toUpperCase() + vehicle.category.slice(1)}</span>
                   </div>
                 </div>
                 
@@ -218,9 +254,6 @@ const BookingPage = () => {
                           <option value="2day">2 Day</option>
                           <option value="3day">3 Day</option>
                         </select>
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
-                          <i className="fas fa-chevron-down"></i>
-                        </div>
                       </div>
                     </div>
                     
@@ -262,20 +295,30 @@ const BookingPage = () => {
                     <div className="flex justify-between">
                       <span>Base Price ({formData.rentalPlan === "12hour" ? "12 Hours" : 
                                         formData.rentalPlan === "2day" ? "2 Days" : "3 Days"})</span>
-                      <span>PKR {calculatePrice(vehicle.type, formData.rentalPlan as RentalPlan, false).toLocaleString()}</span>
+                      <span>PKR {calculatePrice(vehicle.category, formData.rentalPlan as RentalPlan, false).toLocaleString()}</span>
                     </div>
                     
                     {formData.withDriver && (
                       <div className="flex justify-between">
                         <span>Driver Fee</span>
-                        <span>+ PKR {(calculateTotalPrice() - calculatePrice(vehicle.type, formData.rentalPlan as RentalPlan, false)).toLocaleString()}</span>
+                        <span>+ PKR {(calculateTotalPrice() - calculatePrice(vehicle.category, formData.rentalPlan as RentalPlan, false)).toLocaleString()}</span>
                       </div>
                     )}
                     
                     <div className="border-t border-gray-300 pt-3 flex justify-between font-bold">
-                      <span>Total</span>
+                      <span>{enableSharedRide ? "Total (for both riders)" : "Total"}</span>
                       <span className="text-primary text-xl">PKR {calculateTotalPrice().toLocaleString()}</span>
                     </div>
+                    
+                    {enableSharedRide && (
+                      <div className="bg-blue-50 p-3 rounded border border-blue-100">
+                        <div className="flex justify-between text-blue-800 font-medium">
+                          <span>Your share (50%):</span>
+                          <span>PKR {getPricePerRider().toLocaleString()}</span>
+                        </div>
+                        <p className="text-xs text-blue-600 mt-1">The total cost will be split equally between both riders</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -327,34 +370,61 @@ const BookingPage = () => {
                     />
                   </div>
                   
+                  {/* Shared Ride Option - Only for supported vehicles */}
+                  {isSharedRideSupported && (
+                    <div>
+                      <label className="block text-gray-700 mb-2">Ride Sharing</label>
+                      <div className="flex items-center space-x-2">
+                        <label className="inline-flex items-center cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={enableSharedRide}
+                            onChange={handleSharedRideToggle}
+                            className="sr-only peer"
+                          />
+                          <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-200 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                          <span className="ml-3 text-sm font-medium text-gray-900">Enable Ride Share</span>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+                  
                   {/* Location Information */}
                   <div>
                     <label className="block text-gray-700 mb-2" htmlFor="pickupLocation">Pickup Location</label>
-                    <input
-                      type="text"
+                    <select
                       id="pickupLocation"
                       name="pickupLocation"
                       value={formData.pickupLocation}
                       onChange={handleChange}
                       className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
                       required
-                    />
+                    >
+                      <option value="">Select Pickup Location</option>
+                      {majorCities.map((city) => (
+                        <option key={`pickup-${city}`} value={city}>{city}</option>
+                      ))}
+                    </select>
                   </div>
                   
                   <div>
                     <label className="block text-gray-700 mb-2" htmlFor="dropLocation">Drop-off Location</label>
-                    <input
-                      type="text"
+                    <select
                       id="dropLocation"
                       name="dropLocation"
                       value={formData.dropLocation}
                       onChange={handleChange}
                       className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
                       required
-                    />
+                    >
+                      <option value="">Select Drop-off Location</option>
+                      {majorCities.map((city) => (
+                        <option key={`dropoff-${city}`} value={city}>{city}</option>
+                      ))}
+                    </select>
                   </div>
                   
-                  {/* Date and Time - Split into separate fields */}
+                  {/* Date and Time - Change to dropdown for time */}
                   <div>
                     <label className="block text-gray-700 mb-2" htmlFor="pickupDate">Pickup Date</label>
                     <input
@@ -371,15 +441,19 @@ const BookingPage = () => {
                   
                   <div>
                     <label className="block text-gray-700 mb-2" htmlFor="pickupTime">Pickup Time</label>
-                    <input
-                      type="time"
+                    <select
                       id="pickupTime"
                       name="pickupTime"
                       value={formData.pickupTime}
                       onChange={handleChange}
                       className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
                       required
-                    />
+                    >
+                      <option value="">Select Pickup Time</option>
+                      {timeOptions.map((time) => (
+                        <option key={`pickup-time-${time}`} value={time}>{time}</option>
+                      ))}
+                    </select>
                   </div>
                   
                   <div>
@@ -398,17 +472,69 @@ const BookingPage = () => {
                   
                   <div>
                     <label className="block text-gray-700 mb-2" htmlFor="returnTime">Return Time</label>
-                    <input
-                      type="time"
+                    <select
                       id="returnTime"
                       name="returnTime"
                       value={formData.returnTime}
                       onChange={handleChange}
                       className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
                       required
-                    />
+                    >
+                      <option value="">Select Return Time</option>
+                      {timeOptions.map((time) => (
+                        <option key={`return-time-${time}`} value={time}>{time}</option>
+                      ))}
+                    </select>
                   </div>
                 </div>
+                
+                {/* Shared Rider Fields - Show when shared ride is enabled */}
+                {enableSharedRide && (
+                  <div className="mb-6 p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                    <h3 className="font-medium text-blue-800 mb-3">Co-rider Information</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-gray-700 mb-2" htmlFor="coRiderName">Co-rider Name</label>
+                        <input
+                          type="text"
+                          id="coRiderName"
+                          name="name"
+                          value={sharedRiderInfo.name}
+                          onChange={handleSharedRiderChange}
+                          className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-gray-700 mb-2" htmlFor="coRiderPhone">Co-rider Phone</label>
+                        <input
+                          type="tel"
+                          id="coRiderPhone"
+                          name="phone"
+                          value={sharedRiderInfo.phone}
+                          onChange={handleSharedRiderChange}
+                          className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                          required
+                        />
+                      </div>
+                      <div className="col-span-2">
+                        <label className="block text-gray-700 mb-2" htmlFor="coRiderEmail">Co-rider Email (Optional)</label>
+                        <input
+                          type="email"
+                          id="coRiderEmail"
+                          name="email"
+                          value={sharedRiderInfo.email}
+                          onChange={handleSharedRiderChange}
+                          className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                        <p className="text-sm text-blue-600 mt-2">
+                          The total cost will be split equally (50%) between both riders.
+                          Both will receive booking confirmation.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 {/* Notes */}
                 <div className="mb-6">

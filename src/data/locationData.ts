@@ -51,3 +51,9 @@ export const locationData = {
     "Muzaffarabad", "Mirpur", "Rawalakot", "Bagh", "Kotli"
   ]
 };
+
+// Extract provinces from locationData
+export const provinces = Object.keys(locationData);
+
+// All cities (flattened from locationData)
+export const cities = Object.values(locationData).flat();

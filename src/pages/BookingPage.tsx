@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
@@ -253,6 +252,7 @@ const BookingPage = () => {
                           <option value="12hour">12 Hour</option>
                           <option value="2day">2 Day</option>
                           <option value="3day">3 Day</option>
+                          <option value="1week">1 Week</option>
                         </select>
                       </div>
                     </div>

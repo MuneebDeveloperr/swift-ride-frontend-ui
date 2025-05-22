@@ -1,15 +1,14 @@
 
 import { useState } from "react";
 import { Helmet } from "react-helmet";
-import { toast } from "@/components/ui/sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { toast } from "@/components/ui/sonner";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
     subject: "",
     message: ""
   });
@@ -18,27 +17,22 @@ const Contact = () => {
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate form
-    if (!formData.name || !formData.email || !formData.message) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-    
     setIsSubmitting(true);
     
     // Simulate form submission
     setTimeout(() => {
-      toast.success("Your message has been sent successfully!");
+      toast.success("Message sent successfully! We'll get back to you soon.");
       setFormData({
         name: "",
         email: "",
-        phone: "",
         subject: "",
         message: ""
       });
@@ -50,35 +44,28 @@ const Contact = () => {
     <>
       <Helmet>
         <title>Contact Us - Swift Ride</title>
-        <meta name="description" content="Get in touch with Swift Ride. We're here to help with all your vehicle rental needs." />
+        <meta name="description" content="Get in touch with Swift Ride. Contact our team for bookings, inquiries, or support." />
       </Helmet>
       
       <Navbar />
       
       <main className="pt-20 pb-16">
-        {/* Contact Header */}
-        <section className="bg-gray-900 text-white py-20">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl font-bold mb-6">Contact Us</h1>
-              <p className="text-xl text-gray-300">
-                We're here to help with all your vehicle rental needs. Get in touch with us today.
-              </p>
-            </div>
+        {/* Hero Section */}
+        <div className="bg-primary text-white py-16">
+          <div className="container mx-auto px-4 text-center">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4">Contact Us</h1>
+            <p className="text-lg opacity-90 max-w-2xl mx-auto">
+              Have questions or need assistance? Our team is ready to help you with any inquiries regarding our vehicle rental services.
+            </p>
           </div>
-        </section>
+        </div>
         
-        {/* Contact Information & Form */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              {/* Contact Information */}
-              <div>
-                <h2 className="text-3xl font-bold mb-6">Get In Touch</h2>
-                <p className="text-gray-600 mb-8">
-                  Have questions or need assistance? Our team is ready to help you. 
-                  Feel free to reach out to us using the contact information below or the form.
-                </p>
+        <div className="container mx-auto px-4 py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Contact Info */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-lg shadow-md p-6 h-full">
+                <h2 className="text-xl font-semibold mb-6">Contact Information</h2>
                 
                 <div className="space-y-6">
                   <div className="flex items-start">
@@ -86,18 +73,8 @@ const Contact = () => {
                       <i className="fas fa-map-marker-alt"></i>
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">Our Office</h3>
+                      <h3 className="font-medium mb-1">Our Location</h3>
                       <p className="text-gray-600">General Bus Stand Faisalabad, Pakistan</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-start">
-                    <div className="bg-primary/10 p-3 rounded-full text-primary mr-4">
-                      <i className="fas fa-phone-alt"></i>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1">Phone</h3>
-                      <p className="text-gray-600">+92 (21) 1234-5678</p>
                     </div>
                   </div>
                   
@@ -106,8 +83,25 @@ const Contact = () => {
                       <i className="fas fa-envelope"></i>
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">Email</h3>
-                      <p className="text-gray-600">contactswiftride@gmail.com</p>
+                      <h3 className="font-medium mb-1">Email Us</h3>
+                      <p className="text-gray-600">
+                        <a href="mailto:contactswiftride@gmail.com" className="hover:text-primary transition-colors">contactswiftride@gmail.com</a>
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="bg-primary/10 p-3 rounded-full text-primary mr-4">
+                      <i className="fas fa-phone-alt"></i>
+                    </div>
+                    <div>
+                      <h3 className="font-medium mb-1">Call Us</h3>
+                      <p className="text-gray-600">
+                        <a href="tel:+92-21-1234-5678" className="hover:text-primary transition-colors">+92 (21) 1234-5678</a>
+                      </p>
+                      <p className="text-gray-600">
+                        <a href="tel:+92-309-1234567" className="hover:text-primary transition-colors">+92 309 1234567</a>
+                      </p>
                     </div>
                   </div>
                   
@@ -116,186 +110,137 @@ const Contact = () => {
                       <i className="fas fa-clock"></i>
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1">Working Hours</h3>
-                      <p className="text-gray-600">Monday - Saturday: 9:00 AM - 8:00 PM</p>
-                      <p className="text-gray-600">Sunday: 10:00 AM - 6:00 PM</p>
+                      <h3 className="font-medium mb-1">Working Hours</h3>
+                      <p className="text-gray-600">Monday - Saturday: 9:00 AM - 10:00 PM</p>
+                      <p className="text-gray-600">Sunday: 10:00 AM - 8:00 PM</p>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="font-medium mb-3">Follow Us</h3>
+                    <div className="flex space-x-4">
+                      <a href="https://facebook.com" className="bg-gray-200 hover:bg-primary hover:text-white text-gray-700 p-2 rounded-full transition-colors" target="_blank" rel="noopener noreferrer">
+                        <i className="fab fa-facebook-f"></i>
+                      </a>
+                      <a href="https://twitter.com" className="bg-gray-200 hover:bg-primary hover:text-white text-gray-700 p-2 rounded-full transition-colors" target="_blank" rel="noopener noreferrer">
+                        <i className="fab fa-twitter"></i>
+                      </a>
+                      <a href="https://instagram.com" className="bg-gray-200 hover:bg-primary hover:text-white text-gray-700 p-2 rounded-full transition-colors" target="_blank" rel="noopener noreferrer">
+                        <i className="fab fa-instagram"></i>
+                      </a>
+                      <a href="https://linkedin.com" className="bg-gray-200 hover:bg-primary hover:text-white text-gray-700 p-2 rounded-full transition-colors" target="_blank" rel="noopener noreferrer">
+                        <i className="fab fa-linkedin-in"></i>
+                      </a>
                     </div>
                   </div>
                 </div>
-                
-                {/* Social Media */}
-                <div className="mt-8">
-                  <h3 className="font-semibold mb-4">Connect With Us</h3>
-                  <div className="flex space-x-4">
-                    <a href="#" className="bg-primary p-3 rounded-full text-white hover:bg-primary-dark transition-colors">
-                      <i className="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" className="bg-primary p-3 rounded-full text-white hover:bg-primary-dark transition-colors">
-                      <i className="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" className="bg-primary p-3 rounded-full text-white hover:bg-primary-dark transition-colors">
-                      <i className="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" className="bg-primary p-3 rounded-full text-white hover:bg-primary-dark transition-colors">
-                      <i className="fab fa-linkedin-in"></i>
-                    </a>
-                  </div>
-                </div>
               </div>
-              
-              {/* Contact Form */}
-              <div className="bg-gray-50 p-8 rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold mb-6">Send Us a Message</h2>
-                <form onSubmit={handleSubmit}>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            </div>
+            
+            {/* Contact Form */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-lg shadow-md p-6">
+                <h2 className="text-xl font-semibold mb-6">Send Us a Message</h2>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="form-label" htmlFor="name">Name *</label>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
                       <input
                         type="text"
                         id="name"
                         name="name"
-                        className="form-input"
                         value={formData.name}
                         onChange={handleChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                        placeholder="Enter your name"
                         required
                       />
                     </div>
                     
                     <div>
-                      <label className="form-label" htmlFor="email">Email *</label>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
                       <input
                         type="email"
                         id="email"
                         name="email"
-                        className="form-input"
                         value={formData.email}
                         onChange={handleChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                        placeholder="Enter your email"
                         required
                       />
                     </div>
-                    
-                    <div>
-                      <label className="form-label" htmlFor="phone">Phone</label>
-                      <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        className="form-input"
-                        value={formData.phone}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    
-                    <div>
-                      <label className="form-label" htmlFor="subject">Subject</label>
-                      <select
-                        id="subject"
-                        name="subject"
-                        className="form-input"
-                        value={formData.subject}
-                        onChange={handleChange}
-                      >
-                        <option value="">Select a subject</option>
-                        <option value="booking">Booking Inquiry</option>
-                        <option value="support">Customer Support</option>
-                        <option value="feedback">Feedback</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
                   </div>
                   
-                  <div className="mb-6">
-                    <label className="form-label" htmlFor="message">Message *</label>
+                  <div>
+                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+                    <input
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                      placeholder="Enter message subject"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
                     <textarea
                       id="message"
                       name="message"
-                      rows={5}
-                      className="form-input"
                       value={formData.message}
                       onChange={handleChange}
+                      rows={6}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-primary focus:border-primary"
+                      placeholder="Enter your message"
                       required
                     ></textarea>
                   </div>
                   
-                  <button
-                    type="submit"
-                    className="btn-primary w-full"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center justify-center">
-                        <i className="fas fa-spinner fa-spin mr-2"></i> Sending...
-                      </span>
-                    ) : 'Send Message'}
-                  </button>
+                  <div>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="btn-primary py-2 px-6 flex items-center"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <i className="fas fa-spinner fa-spin mr-2"></i>
+                          Sending Message...
+                        </>
+                      ) : (
+                        <>
+                          Send Message
+                          <i className="fas fa-paper-plane ml-2"></i>
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>
           </div>
-        </section>
-        
-        {/* Map */}
-        <section className="py-16 bg-gray-50">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-3xl font-bold mb-6">Our Location</h2>
-              <p className="text-gray-600">
-                Visit us at the General Bus Stand Faisalabad to speak with our team in person.
-              </p>
-            </div>
-            
-            <div className="rounded-lg overflow-hidden shadow-md">
-              {/* Updated Google Maps iframe */}
-              <div className="w-full h-96">
-                <iframe 
-                  src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d10940.472175652128!2d73.09774300000001!3d31.42816!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x392268238e367c67%3A0xb3e7054b85374e6c!2z2YTYp9ix24wg2KfaiNuB!5e1!3m2!1sen!2sus!4v1747734219398!5m2!1sen!2sus"
-                  width="100%" 
-                  height="100%" 
-                  style={{ border: 0 }} 
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  title="Swift Ride Location"
-                  className="w-full h-full"
-                ></iframe>
-              </div>
+          
+          {/* Google Map */}
+          <div className="mt-12">
+            <h2 className="text-xl font-semibold mb-6">Our Location</h2>
+            <div className="h-96 rounded-lg overflow-hidden">
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3404.813976422993!2d73.08635061513558!3d31.420029981406!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x392243596d78ecc3%3A0x5339e3d3ff8fcf59!2sGeneral%20Bus%20Stand%2C%20Faisalabad%2C%20Punjab!5e0!3m2!1sen!2s!4v1616569887319!5m2!1sen!2s" 
+                width="100%" 
+                height="100%" 
+                style={{ border: 0 }} 
+                allowFullScreen 
+                loading="lazy"
+                title="Swift Ride Location"
+              ></iframe>
             </div>
           </div>
-        </section>
-        
-        {/* FAQ Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto text-center mb-12">
-              <h2 className="text-3xl font-bold mb-6">Frequently Asked Questions</h2>
-              <p className="text-gray-600">
-                Find answers to common questions about our vehicle rental services.
-              </p>
-            </div>
-            
-            <div className="max-w-3xl mx-auto space-y-6">
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">What documents do I need to rent a vehicle?</h3>
-                <p className="text-gray-600">You will need a valid driver's license, CNIC, and a credit/debit card for the security deposit. For international customers, a passport is also required.</p>
-              </div>
-              
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">Can I book a vehicle with a driver?</h3>
-                <p className="text-gray-600">Yes, we offer both self-drive and chauffeur-driven options for all our vehicles. You can select your preference during the booking process.</p>
-              </div>
-              
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">What is your cancellation policy?</h3>
-                <p className="text-gray-600">Cancellations made 48 hours before the scheduled pickup time will receive a full refund. Cancellations within 48 hours may be subject to a cancellation fee.</p>
-              </div>
-              
-              <div className="bg-gray-50 p-6 rounded-lg">
-                <h3 className="text-lg font-semibold mb-2">Do you offer pickup and drop-off services?</h3>
-                <p className="text-gray-600">Yes, we offer pickup and drop-off services at your specified locations, including airports, hotels, and residential addresses within our service areas.</p>
-              </div>
-            </div>
-          </div>
-        </section>
+        </div>
       </main>
       
       <Footer />

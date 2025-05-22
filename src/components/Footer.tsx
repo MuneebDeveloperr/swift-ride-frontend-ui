@@ -26,7 +26,7 @@ const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-6">
       <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
           <div className="mb-8 md:mb-0">
             <h2 className="text-2xl font-bold mb-4">Swift<span className="text-secondary">Ride</span></h2>
@@ -34,22 +34,22 @@ const Footer = () => {
               Swift Ride offers premium vehicle rental services. Book cars, buses, mini buses, and coasters for any occasion.
             </p>
             <div className="flex space-x-4">
-              <a href="https://facebook.com" className="text-gray-400 hover:text-white transition-colors">
+              <a href="https://facebook.com" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-facebook-f text-lg"></i>
               </a>
-              <a href="https://instagram.com" className="text-gray-400 hover:text-white transition-colors">
+              <a href="https://instagram.com" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-instagram text-lg"></i>
               </a>
-              <a href="https://twitter.com" className="text-gray-400 hover:text-white transition-colors">
+              <a href="https://twitter.com" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-twitter text-lg"></i>
               </a>
-              <a href="https://linkedin.com" className="text-gray-400 hover:text-white transition-colors">
+              <a href="https://linkedin.com" className="text-gray-400 hover:text-white transition-colors" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-linkedin-in text-lg"></i>
               </a>
             </div>
           </div>
 
-          {/* Quick Links - Removed Login and Signup links */}
+          {/* Quick Links */}
           <div className="mb-8 md:mb-0">
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-3">
@@ -80,6 +80,19 @@ const Footer = () => {
               </li>
               <li>
                 <Link to="/coasters" className="text-gray-400 hover:text-white transition-colors">Coasters</Link>
+              </li>
+            </ul>
+          </div>
+          
+          {/* Legal Links */}
+          <div className="mb-8 md:mb-0">
+            <h3 className="text-lg font-semibold mb-4">Legal</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/terms" className="text-gray-400 hover:text-white transition-colors">Terms & Conditions</Link>
+              </li>
+              <li>
+                <Link to="/privacy" className="text-gray-400 hover:text-white transition-colors">Privacy Policy</Link>
               </li>
             </ul>
           </div>
@@ -114,7 +127,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="border-t border-gray-800 mt-12 pt-6 text-center text-gray-400">
-          <p>© 2025 Swift Ride. All rights reserved.</p>
+          <p>© 2025 <Link to="/" className="hover:text-primary transition-colors">Swift Ride</Link>. All rights reserved.</p>
         </div>
       </div>
     </footer>

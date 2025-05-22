@@ -1,39 +1,63 @@
 
 import { RentalPlan } from "@/types";
 
-// Pricing matrix based on the requirements
+// Pricing matrix based on the updated requirements
 const pricingMatrix = {
   car: {
     base: {
       "12hour": 5000,
       "2day": 9500,
-      "3day": 14000
+      "3day": 14000,
+      "1week": 28000
     },
-    driverCost: 1500
+    withDriver: {
+      "12hour": 6500,
+      "2day": 12500,
+      "3day": 18000,
+      "1week": 36000
+    }
   },
   minibus: {
     base: {
       "12hour": 17000,
       "2day": 32000,
-      "3day": 46000
+      "3day": 46000,
+      "1week": 90000
     },
-    driverCost: 2500
+    withDriver: {
+      "12hour": 19500,
+      "2day": 36000,
+      "3day": 51000,
+      "1week": 99000
+    }
   },
   coaster: {
     base: {
       "12hour": 12000,
       "2day": 22500,
-      "3day": 33000
+      "3day": 33000,
+      "1week": 65000
     },
-    driverCost: 2500
+    withDriver: {
+      "12hour": 14500,
+      "2day": 26500,
+      "3day": 38000,
+      "1week": 73000
+    }
   },
   bus: {
     base: {
       "12hour": 25000,
       "2day": 48000,
-      "3day": 70000
+      "3day": 70000,
+      "1week": 130000
     },
-    driverCost: 4000
+    withDriver: {
+      "12hour": 29000,
+      "2day": 56000,
+      "3day": 81000,
+      "1week": 144000
+    }
   }
 };
 
@@ -43,19 +67,9 @@ export const calculatePrice = (
   rentalPlan: RentalPlan,
   withDriver: boolean
 ): number => {
-  // Get base price for this vehicle type and rental plan
-  const basePrice = pricingMatrix[vehicleType].base[rentalPlan];
-  
-  // Add driver cost if needed
-  let totalPrice = basePrice;
   if (withDriver) {
-    // Driver cost adjustment based on rental plan
-    let driverMultiplier = 1; // 12 hour
-    if (rentalPlan === "2day") driverMultiplier = 2;
-    if (rentalPlan === "3day") driverMultiplier = 3;
-    
-    totalPrice += pricingMatrix[vehicleType].driverCost * driverMultiplier;
+    return pricingMatrix[vehicleType].withDriver[rentalPlan];
+  } else {
+    return pricingMatrix[vehicleType].base[rentalPlan];
   }
-  
-  return totalPrice;
 };

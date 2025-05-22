@@ -46,7 +46,7 @@ export interface VehicleType {
 }
 
 // Booking related types
-export type RentalPlan = '12hour' | '2day' | '3day';
+export type RentalPlan = '12hour' | '2day' | '3day' | '1week';
 
 export interface BookingFormData {
   fullName: string;

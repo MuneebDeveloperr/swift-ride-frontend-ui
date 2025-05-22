@@ -21,15 +21,15 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
   const getPriceRange = (): [number, number] => {
     switch (vehicleType) {
       case "car":
-        return [5000, 25000];
+        return [5000, 36000];
       case "bus":
-        return [25000, 100000];
+        return [25000, 144000];
       case "minibus":
-        return [17000, 70000];
+        return [17000, 99000];
       case "coaster":
-        return [12000, 50000];
+        return [12000, 73000];
       default:
-        return [5000, 100000];
+        return [5000, 144000];
     }
   };
 
@@ -43,12 +43,79 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
   });
 
   const [sliderValue, setSliderValue] = useState<[number, number]>(initialPriceRange);
+  const [showFilters, setShowFilters] = useState(false);
+  const [sortOption, setSortOption] = useState("default");
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({
+  const handleSortChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSortOption(value);
+    setFilters(prev => ({
       ...prev,
-      [name]: value,
+      sortBy: value
+    }));
+  };
+
+  const handleBrandChange = (brand: string) => {
+    let newSelectedBrands;
+    
+    if (brand === "all") {
+      newSelectedBrands = ["all"];
+    } else {
+      // Remove "all" if it's in the selected brands
+      const withoutAll = selectedBrands.filter(b => b !== "all");
+      
+      // Toggle the selected brand
+      if (withoutAll.includes(brand)) {
+        newSelectedBrands = withoutAll.filter(b => b !== brand);
+      } else {
+        newSelectedBrands = [...withoutAll, brand];
+      }
+      
+      // If no brands are selected, select "all"
+      if (newSelectedBrands.length === 0) {
+        newSelectedBrands = ["all"];
+      }
+    }
+    
+    setSelectedBrands(newSelectedBrands);
+    
+    // Update filters with either "all" or the joined string of brands
+    setFilters(prev => ({
+      ...prev,
+      brand: newSelectedBrands.includes("all") ? "all" : newSelectedBrands.join(",")
+    }));
+  };
+
+  const handleLocationChange = (location: string) => {
+    let newSelectedLocations;
+    
+    if (location === "all") {
+      newSelectedLocations = ["all"];
+    } else {
+      // Remove "all" if it's in the selected locations
+      const withoutAll = selectedLocations.filter(l => l !== "all");
+      
+      // Toggle the selected location
+      if (withoutAll.includes(location)) {
+        newSelectedLocations = withoutAll.filter(l => l !== location);
+      } else {
+        newSelectedLocations = [...withoutAll, location];
+      }
+      
+      // If no locations are selected, select "all"
+      if (newSelectedLocations.length === 0) {
+        newSelectedLocations = ["all"];
+      }
+    }
+    
+    setSelectedLocations(newSelectedLocations);
+    
+    // Update filters with either "all" or the joined string of locations
+    setFilters(prev => ({
+      ...prev,
+      location: newSelectedLocations.includes("all") ? "all" : newSelectedLocations.join(",")
     }));
   };
 
@@ -71,114 +138,155 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
       priceRange: initialPriceRange,
     });
     
+    setSortOption("default");
+    setSelectedBrands(["all"]);
+    setSelectedLocations(["all"]);
     setSliderValue(initialPriceRange);
   };
+
+  // Initialize selected brands and locations
+  useEffect(() => {
+    setSelectedBrands(["all"]);
+    setSelectedLocations(["all"]);
+  }, []);
 
   // Pass filter changes to parent component
   useEffect(() => {
     onFilterChange(filters);
   }, [filters, onFilterChange]);
 
-  const [showFilters, setShowFilters] = useState(false);
-
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">Filters</h3>
+    <div className="lg:flex gap-6">
+      {/* Mobile Filter Toggle */}
+      <div className="lg:hidden mb-4">
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="md:hidden text-primary"
+          className="w-full flex items-center justify-between bg-white rounded-lg shadow-md p-4"
         >
-          {showFilters ? (
-            <i className="fas fa-chevron-up"></i>
-          ) : (
-            <i className="fas fa-chevron-down"></i>
-          )}
+          <span className="text-lg font-semibold">Filters</span>
+          <span>
+            {showFilters ? (
+              <i className="fas fa-chevron-up"></i>
+            ) : (
+              <i className="fas fa-chevron-down"></i>
+            )}
+          </span>
         </button>
       </div>
-
-      <div className={`${showFilters ? 'block' : 'hidden'} md:block`}>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      
+      {/* Filters Sidebar */}
+      <div className={`${showFilters ? 'block' : 'hidden'} lg:block lg:w-64 flex-shrink-0`}>
+        <div className="bg-white rounded-lg shadow-md p-4 mb-6 lg:mb-0 sticky top-24">
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-semibold">Filters</h3>
+            <button
+              onClick={resetFilters}
+              className="text-primary hover:text-primary-dark text-sm flex items-center"
+            >
+              <i className="fas fa-redo-alt mr-1"></i> Reset
+            </button>
+          </div>
+          
           {/* Sort By */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Sort By
-            </label>
-            <div className="relative">
-              <select
-                name="sortBy"
-                value={filters.sortBy}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary appearance-none"
-              >
-                <option value="default">Recommended</option>
-                <option value="price_low_high">Price: Low to High</option>
-                <option value="price_high_low">Price: High to Low</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                <i className="fas fa-chevron-down text-gray-400 text-xs"></i>
-              </div>
-            </div>
-          </div>
-
-          {/* Brand Filter - Fixed to open downward */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Brand
-            </label>
-            <div className="relative">
-              <select
-                name="brand"
-                value={filters.brand}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary appearance-none"
-              >
-                <option value="all">All Brands</option>
-                {brands.map((brand) => (
-                  <option key={brand} value={brand.toLowerCase()}>
-                    {brand}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                <i className="fas fa-chevron-down text-gray-400 text-xs"></i>
-              </div>
-            </div>
-          </div>
-
-          {/* Location Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Location
-            </label>
-            <div className="relative">
-              <select
-                name="location"
-                value={filters.location}
-                onChange={handleFilterChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary appearance-none"
-              >
-                <option value="all">All Locations</option>
-                {locations.map((location) => (
-                  <option key={location} value={location.toLowerCase()}>
-                    {location}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-                <i className="fas fa-chevron-down text-gray-400 text-xs"></i>
-              </div>
-            </div>
-          </div>
-
-          {/* Price Range - Improved with Slider */}
-          <div>
-            <div className="flex justify-between items-center mb-1">
-              <label className="block text-sm font-medium text-gray-700">
-                Price Range (PKR)
+          <div className="mb-6">
+            <h4 className="font-medium mb-3">Sort By</h4>
+            <div className="space-y-2">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="sortBy"
+                  value="default"
+                  checked={sortOption === "default"}
+                  onChange={handleSortChange}
+                  className="text-primary focus:ring-primary mr-2"
+                />
+                <span className="text-sm">Recommended</span>
               </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="sortBy"
+                  value="price_low_high"
+                  checked={sortOption === "price_low_high"}
+                  onChange={handleSortChange}
+                  className="text-primary focus:ring-primary mr-2"
+                />
+                <span className="text-sm">Price: Low to High</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="sortBy"
+                  value="price_high_low"
+                  checked={sortOption === "price_high_low"}
+                  onChange={handleSortChange}
+                  className="text-primary focus:ring-primary mr-2"
+                />
+                <span className="text-sm">Price: High to Low</span>
+              </label>
+            </div>
+          </div>
+          
+          {/* Brands */}
+          <div className="mb-6">
+            <h4 className="font-medium mb-3">Brands</h4>
+            <div className="max-h-40 overflow-y-auto pr-2 space-y-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedBrands.includes("all")}
+                  onChange={() => handleBrandChange("all")}
+                  className="text-primary focus:ring-primary mr-2"
+                />
+                <span className="text-sm">All Brands</span>
+              </label>
+              {brands.map((brand) => (
+                <label key={brand} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedBrands.includes(brand.toLowerCase())}
+                    onChange={() => handleBrandChange(brand.toLowerCase())}
+                    className="text-primary focus:ring-primary mr-2"
+                  />
+                  <span className="text-sm">{brand}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          
+          {/* Locations */}
+          <div className="mb-6">
+            <h4 className="font-medium mb-3">Location</h4>
+            <div className="max-h-40 overflow-y-auto pr-2 space-y-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  checked={selectedLocations.includes("all")}
+                  onChange={() => handleLocationChange("all")}
+                  className="text-primary focus:ring-primary mr-2"
+                />
+                <span className="text-sm">All Locations</span>
+              </label>
+              {locations.map((location) => (
+                <label key={location} className="flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={selectedLocations.includes(location.toLowerCase())}
+                    onChange={() => handleLocationChange(location.toLowerCase())}
+                    className="text-primary focus:ring-primary mr-2"
+                  />
+                  <span className="text-sm">{location}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+          
+          {/* Price Range */}
+          <div>
+            <div className="flex justify-between items-center mb-3">
+              <h4 className="font-medium">Price Range</h4>
               <div className="text-xs text-gray-500">
-                {sliderValue[0].toLocaleString()} - {sliderValue[1].toLocaleString()}
+                PKR {sliderValue[0].toLocaleString()} - {sliderValue[1].toLocaleString()}
               </div>
             </div>
             <div className="px-2 py-4">
@@ -194,16 +302,10 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
             </div>
           </div>
         </div>
-
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={resetFilters}
-            className="text-primary hover:text-primary-dark text-sm flex items-center"
-          >
-            <i className="fas fa-redo-alt mr-1"></i> Reset Filters
-          </button>
-        </div>
       </div>
+      
+      {/* Content placeholder for the vehicle cards (will be rendered in the parent component) */}
+      <div className="w-full"></div>
     </div>
   );
 };

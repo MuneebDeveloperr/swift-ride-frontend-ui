@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useUser } from "@/contexts/UserContext";
-import { User } from "@/types";
 
 const Signup = () => {
   const { login } = useUser();
@@ -67,8 +66,8 @@ const Signup = () => {
         <meta name="description" content="Create an account with Swift Ride to start booking vehicles for your journeys." />
       </Helmet>
       
-      <div className="min-h-screen flex items-center justify-center p-8 bg-gray-50">
-        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+      <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-gray-50">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6 sm:p-8">
           <div className="text-center mb-8">
             <Link to="/" className="inline-block">
               <span className="text-3xl font-bold text-primary">Swift<span className="text-secondary">Ride</span></span>

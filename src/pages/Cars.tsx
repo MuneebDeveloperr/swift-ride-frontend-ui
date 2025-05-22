@@ -22,15 +22,17 @@ const Cars = () => {
     
     // Apply brand filter
     if (filters.brand !== "all") {
+      const selectedBrands = filters.brand.split(",");
       filtered = filtered.filter(car => 
-        car.brand.toLowerCase() === filters.brand.toLowerCase()
+        selectedBrands.includes(car.brand.toLowerCase())
       );
     }
     
     // Apply location filter
     if (filters.location !== "all") {
+      const selectedLocations = filters.location.split(",");
       filtered = filtered.filter(car => 
-        car.location.toLowerCase() === filters.location.toLowerCase()
+        selectedLocations.includes(car.location.toLowerCase())
       );
     }
     
@@ -66,7 +68,7 @@ const Cars = () => {
       
       <Navbar />
       
-      <main className="pt-20 pb-16 bg-gray-50">
+      <main className="pt-20 pb-16 bg-gray-50 min-h-screen">
         <div className="container mx-auto px-4">
           <div className="py-8">
             <h1 className="text-3xl font-bold mb-2">Cars for Rent</h1>
@@ -75,37 +77,41 @@ const Cars = () => {
               We offer a range of models from top brands like Toyota, Honda, BMW, and more.
             </p>
             
-            {/* Filters */}
-            <VehicleFilters 
-              vehicleType="car"
-              brands={brands}
-              locations={locations}
-              onFilterChange={handleFilterChange}
-            />
-            
-            {/* Results */}
-            {loading ? (
-              <div className="py-12 text-center">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                <p className="mt-4 text-gray-600">Loading cars...</p>
+            <div className="lg:flex">
+              {/* Filters */}
+              <VehicleFilters 
+                vehicleType="car"
+                brands={brands}
+                locations={locations}
+                onFilterChange={handleFilterChange}
+              />
+              
+              {/* Results */}
+              <div className="w-full">
+                {loading ? (
+                  <div className="py-12 text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                    <p className="mt-4 text-gray-600">Loading cars...</p>
+                  </div>
+                ) : filteredVehicles.length === 0 ? (
+                  <div className="py-12 text-center">
+                    <div className="text-3xl text-gray-400 mb-4">
+                      <i className="fas fa-search"></i>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">No cars found</h3>
+                    <p className="text-gray-600">
+                      Try adjusting your filters to find available cars.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {filteredVehicles.map((car) => (
+                      <VehicleCard key={car.id} vehicle={car} />
+                    ))}
+                  </div>
+                )}
               </div>
-            ) : filteredVehicles.length === 0 ? (
-              <div className="py-12 text-center">
-                <div className="text-3xl text-gray-400 mb-4">
-                  <i className="fas fa-search"></i>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">No cars found</h3>
-                <p className="text-gray-600">
-                  Try adjusting your filters to find available cars.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredVehicles.map((car) => (
-                  <VehicleCard key={car.id} vehicle={car} />
-                ))}
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </main>

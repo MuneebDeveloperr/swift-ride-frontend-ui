@@ -22,15 +22,17 @@ const Coasters = () => {
     
     // Apply brand filter
     if (filters.brand !== "all") {
+      const selectedBrands = filters.brand.split(",");
       filtered = filtered.filter(coaster => 
-        coaster.brand.toLowerCase() === filters.brand.toLowerCase()
+        selectedBrands.includes(coaster.brand.toLowerCase())
       );
     }
     
     // Apply location filter
     if (filters.location !== "all") {
+      const selectedLocations = filters.location.split(",");
       filtered = filtered.filter(coaster => 
-        coaster.location.toLowerCase() === filters.location.toLowerCase()
+        selectedLocations.includes(coaster.location.toLowerCase())
       );
     }
     
@@ -66,7 +68,7 @@ const Coasters = () => {
       
       <Navbar />
       
-      <main className="pt-20 pb-16 bg-gray-50">
+      <main className="pt-20 pb-16 bg-gray-50 min-h-screen">
         <div className="container mx-auto px-4">
           <div className="py-8">
             <h1 className="text-3xl font-bold mb-2">Coasters for Rent</h1>
@@ -75,37 +77,41 @@ const Coasters = () => {
               Choose from top brands like Toyota, Yutong, and Higer for a comfortable journey.
             </p>
             
-            {/* Filters */}
-            <VehicleFilters 
-              vehicleType="coaster"
-              brands={brands}
-              locations={locations}
-              onFilterChange={handleFilterChange}
-            />
-            
-            {/* Results */}
-            {loading ? (
-              <div className="py-12 text-center">
-                <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-                <p className="mt-4 text-gray-600">Loading coasters...</p>
+            <div className="lg:flex">
+              {/* Filters */}
+              <VehicleFilters 
+                vehicleType="coaster"
+                brands={brands}
+                locations={locations}
+                onFilterChange={handleFilterChange}
+              />
+              
+              {/* Results */}
+              <div className="w-full">
+                {loading ? (
+                  <div className="py-12 text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+                    <p className="mt-4 text-gray-600">Loading coasters...</p>
+                  </div>
+                ) : filteredVehicles.length === 0 ? (
+                  <div className="py-12 text-center">
+                    <div className="text-3xl text-gray-400 mb-4">
+                      <i className="fas fa-search"></i>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">No coasters found</h3>
+                    <p className="text-gray-600">
+                      Try adjusting your filters to find available coasters.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {filteredVehicles.map((coaster) => (
+                      <VehicleCard key={coaster.id} vehicle={coaster} />
+                    ))}
+                  </div>
+                )}
               </div>
-            ) : filteredVehicles.length === 0 ? (
-              <div className="py-12 text-center">
-                <div className="text-3xl text-gray-400 mb-4">
-                  <i className="fas fa-search"></i>
-                </div>
-                <h3 className="text-xl font-semibold mb-2">No coasters found</h3>
-                <p className="text-gray-600">
-                  Try adjusting your filters to find available coasters.
-                </p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredVehicles.map((coaster) => (
-                  <VehicleCard key={coaster.id} vehicle={coaster} />
-                ))}
-              </div>
-            )}
+            </div>
           </div>
         </div>
       </main>

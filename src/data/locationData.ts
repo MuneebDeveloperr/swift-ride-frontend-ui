@@ -1,40 +1,24 @@
 
-import { LocationData } from "@/types";
-
-// Full location dataset with provinces and cities
-export const locationData: LocationData = {
-  "Punjab": [
-    "Lahore", "Faisalabad", "Multan", "Gujranwala", "Sargodha", "Bahawalpur", 
-    "Sialkot", "Dera Ghazi Khan", "Sheikhupura", "Kasur", "Okara", "Jhelum", 
-    "Rajanpur", "Mandi Bahauddin", "Narowal", "Layyah", "Muzaffargarh", 
-    "Lodhran", "Toba Tek Singh", "Khanewal", "Chakwal"
-  ],
-  "Sindh": [
-    "Karachi", "Hyderabad", "Sukkur", "Larkana", "Mirpur Khas", 
-    "Nawabshah (Shaheed Benazirabad)", "Dadu", "Jacobabad", "Shikarpur", 
-    "Thatta", "Badin", "Jamshoro"
-  ],
-  "KPK": [
-    "Peshawar", "Mardan", "Abbottabad", "Swat", "Kohat", "Dera Ismail Khan", 
-    "Bannu", "Charsadda", "Mansehra", "Nowshera"
-  ],
-  "Balochistan": [
-    "Quetta", "Khuzdar", "Gwadar", "Zhob", "Turbat", "Sibi", 
-    "Loralai", "Chaman", "Nasirabad"
-  ],
-  "Islamabad Capital Territory": ["Islamabad"],
-  "Gilgit-Baltistan": ["Gilgit", "Skardu", "Chilas", "Ghanche", "Astore"],
-  "Azad Jammu & Kashmir": ["Muzaffarabad", "Mirpur", "Kotli", "Bhimber", "Rawalakot"]
-};
-
-// Subset of major cities for booking and pickup/dropoff locations
+// Major cities of Pakistan
 export const majorCities = [
-  "Karachi", "Lahore", "Faisalabad", "Rawalpindi", "Islamabad",
-  "Gujranwala", "Peshawar", "Multan", "Sialkot", "Quetta",
-  "Bahawalpur", "Sargodha", "Mardan", "Gujrat", "Sheikhupura"
+  "Karachi", 
+  "Lahore", 
+  "Faisalabad", 
+  "Rawalpindi", 
+  "Islamabad",
+  "Gujranwala", 
+  "Peshawar", 
+  "Multan", 
+  "Sialkot", 
+  "Quetta",
+  "Bahawalpur", 
+  "Sargodha", 
+  "Mardan", 
+  "Gujrat", 
+  "Sheikhupura"
 ];
 
-// Time options for booking in 12-hour format with 1-hour intervals
+// Time options - 1-hour intervals in 12-hour format with AM/PM
 export const timeOptions = [
   "12:00 AM", "1:00 AM", "2:00 AM", "3:00 AM", "4:00 AM", "5:00 AM",
   "6:00 AM", "7:00 AM", "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM",
@@ -42,6 +26,28 @@ export const timeOptions = [
   "6:00 PM", "7:00 PM", "8:00 PM", "9:00 PM", "10:00 PM", "11:00 PM"
 ];
 
-// Add missing exports for provinces and cities that Profile.tsx is trying to import
-export const provinces = Object.keys(locationData) as Array<keyof typeof locationData>;
-export const cities = locationData;
+// Complete location data structure with provinces and cities
+export const locationData = {
+  "Punjab": [
+    "Lahore", "Faisalabad", "Rawalpindi", "Multan", "Gujranwala", 
+    "Sialkot", "Bahawalpur", "Sargodha", "Gujrat", "Sheikhupura"
+  ],
+  "Sindh": [
+    "Karachi", "Hyderabad", "Sukkur", "Larkana", "Nawabshah", "Mirpurkhas"
+  ],
+  "KPK": [
+    "Peshawar", "Mardan", "Abbottabad", "Kohat", "Swat", "Dera Ismail Khan"
+  ],
+  "Balochistan": [
+    "Quetta", "Gwadar", "Turbat", "Khuzdar", "Hub", "Chaman"
+  ],
+  "Islamabad Capital Territory": [
+    "Islamabad"
+  ],
+  "Gilgit-Baltistan": [
+    "Gilgit", "Skardu", "Hunza", "Chilas", "Ghanche"
+  ],
+  "Azad Jammu & Kashmir": [
+    "Muzaffarabad", "Mirpur", "Rawalakot", "Bagh", "Kotli"
+  ]
+};

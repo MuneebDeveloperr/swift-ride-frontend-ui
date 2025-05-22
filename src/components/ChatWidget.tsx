@@ -1,191 +1,189 @@
 
-import { useState, useEffect, useRef } from "react";
-import { useUser } from "@/contexts/UserContext";
-import { Message } from "@/types";
-import { v4 as uuidv4 } from "uuid";
-import { toast } from "sonner";
+import { useState, useRef, useEffect } from "react";
+import { toast } from "@/components/ui/sonner";
+
+interface Message {
+  id: string;
+  sender: 'user' | 'system';
+  text: string;
+  timestamp: string;
+}
 
 const ChatWidget = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [newMessage, setNewMessage] = useState("");
-  const { user } = useUser();
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: '1',
+      sender: 'system',
+      text: 'Hello! Welcome to Swift Ride. How can I assist you today?',
+      timestamp: new Date().toISOString()
+    }
+  ]);
+  const [input, setInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [unreadCount, setUnreadCount] = useState(0);
-
-  // Mock initial admin message
-  useEffect(() => {
-    if (messages.length === 0) {
-      const initialMessage: Message = {
-        id: uuidv4(),
-        sender: "admin",
-        text: "Hello! How can I assist you with your vehicle rental today?",
-        timestamp: new Date().toISOString(),
-      };
-      setMessages([initialMessage]);
-    }
-  }, [messages.length]);
-
-  useEffect(() => {
-    // Scroll to bottom when messages change
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [messages, isOpen]);
-
-  // Simulate unread message notification
-  useEffect(() => {
-    // If closed chat and new admin message
-    if (!isOpen && messages.length > 0 && messages[messages.length - 1].sender === "admin") {
-      setUnreadCount((prev) => prev + 1);
-    }
-  }, [messages, isOpen]);
-
-  const handleSendMessage = (e: React.FormEvent) => {
+  
+  const toggleChat = () => setIsOpen(prev => !prev);
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+  
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
-
+    
+    if (!input.trim()) return;
+    
+    // Add user message
     const userMessage: Message = {
-      id: uuidv4(),
-      sender: "user",
-      text: newMessage,
-      timestamp: new Date().toISOString(),
+      id: Date.now().toString(),
+      sender: 'user',
+      text: input,
+      timestamp: new Date().toISOString()
     };
-
-    setMessages((prev) => [...prev, userMessage]);
-    setNewMessage("");
-
-    // Simulate admin response after 1 second
+    
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setIsTyping(true);
+    
+    // Simulate bot typing
     setTimeout(() => {
-      const adminResponses = [
-        "Thanks for your message! Our team will get back to you soon.",
-        "I understand you're looking for vehicle rental options. How many passengers do you need to accommodate?",
-        "Would you prefer a vehicle with or without a driver?",
-        "We have great deals on weekend rentals right now. Would you like more information?",
-        "If you have any specific requirements for your rental, please let us know!",
-      ];
-
-      const randomResponse = adminResponses[Math.floor(Math.random() * adminResponses.length)];
-
-      const adminMessage: Message = {
-        id: uuidv4(),
-        sender: "admin",
-        text: randomResponse,
-        timestamp: new Date().toISOString(),
+      // Add bot response
+      let response = "Thanks for your message! Our customer service team will get back to you soon.";
+      
+      // Simple pattern matching for common queries
+      const lowerCaseInput = input.toLowerCase();
+      
+      if (lowerCaseInput.includes('booking') || lowerCaseInput.includes('reserve')) {
+        response = "To make a booking, please go to our vehicle pages and select the vehicle you want to rent. Then click 'Book Now' to start the booking process.";
+      } else if (lowerCaseInput.includes('price') || lowerCaseInput.includes('cost') || lowerCaseInput.includes('rate')) {
+        response = "Our prices vary depending on the vehicle type and rental duration. You can find detailed pricing information on each vehicle's page.";
+      } else if (lowerCaseInput.includes('cancel') || lowerCaseInput.includes('refund')) {
+        response = "Cancellations made 48 hours before the scheduled pickup time will receive a full refund. Cancellations within 48 hours may be subject to a cancellation fee.";
+      } else if (lowerCaseInput.includes('contact') || lowerCaseInput.includes('phone') || lowerCaseInput.includes('email')) {
+        response = "You can contact us at contactswiftride@gmail.com or call +92 (21) 1234-5678. Our office hours are Monday to Saturday 9:00 AM - 10:00 PM and Sunday 10:00 AM - 8:00 PM.";
+      }
+      
+      const botMessage: Message = {
+        id: Date.now().toString(),
+        sender: 'system',
+        text: response,
+        timestamp: new Date().toISOString()
       };
-
-      setMessages((prev) => [...prev, adminMessage]);
+      
+      setMessages(prev => [...prev, botMessage]);
+      setIsTyping(false);
+      
+      // If user asked about booking success
+      if (lowerCaseInput.includes('booked') || lowerCaseInput.includes('successful')) {
+        toast.success("Your booking has been confirmed!");
+      }
     }, 1000);
   };
-
-  const toggleChat = () => {
-    setIsOpen(!isOpen);
-    if (!isOpen) {
-      setUnreadCount(0);
-    }
-  };
-
-  // Clear conversation function
+  
   const clearConversation = () => {
-    setMessages([]);
-    // This will trigger the useEffect to add the initial message again
-    toast.success("Chat conversation cleared");
+    setMessages([
+      {
+        id: '1',
+        sender: 'system',
+        text: 'Hello! Welcome to Swift Ride. How can I assist you today?',
+        timestamp: new Date().toISOString()
+      }
+    ]);
   };
-
-  return (
-    <div className="fixed bottom-5 right-5 z-40">
-      {/* Chat Widget Button */}
+  
+  // Auto scroll to bottom of messages
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+  
+  if (!isOpen) {
+    return (
       <button
         onClick={toggleChat}
-        className="bg-primary hover:bg-primary-dark text-white rounded-full w-14 h-14 flex items-center justify-center shadow-lg relative"
+        className="fixed bottom-6 right-6 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary-dark transition-colors z-50"
+        aria-label="Open chat"
       >
-        {isOpen ? (
-          <i className="fas fa-times text-xl"></i>
-        ) : (
-          <i className="fas fa-comment text-xl"></i>
-        )}
-        {!isOpen && unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-            {unreadCount}
-          </span>
-        )}
+        <i className="fas fa-comments text-2xl"></i>
       </button>
-
-      {/* Chat Window */}
-      {isOpen && (
-        <div className="absolute bottom-16 right-0 w-80 sm:w-96 bg-white rounded-lg shadow-xl overflow-hidden">
-          {/* Chat Header */}
-          <div className="bg-primary text-white p-4 flex justify-between items-center">
-            <h3 className="font-semibold">Swift Ride Support</h3>
-            <div className="flex items-center space-x-2">
-              <button 
-                onClick={toggleChat} 
-                className="text-white hover:bg-primary-dark rounded-full p-1 focus:outline-none"
-                title="Close chat"
-              >
-                <i className="fas fa-times"></i>
-              </button>
-            </div>
-          </div>
-
-          {/* Chat Messages */}
-          <div className="h-80 overflow-y-auto p-4 bg-gray-50">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`mb-4 flex ${
-                  message.sender === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-lg p-3 ${
-                    message.sender === "user"
-                      ? "bg-primary text-white rounded-tr-none"
-                      : "bg-gray-200 text-gray-800 rounded-tl-none"
-                  }`}
-                >
-                  <p className="text-sm">{message.text}</p>
-                  <p className="text-xs mt-1 opacity-70">
-                    {new Date(message.timestamp).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </p>
-                </div>
-              </div>
-            ))}
-
-            {/* Clear conversation button - repositioned to bottom */}
-            <div className="text-center mt-4 mb-2">
-              <button
-                onClick={clearConversation}
-                className="text-sm text-gray-500 hover:text-primary opacity-50 hover:opacity-100 transition-opacity"
-              >
-                Clear conversation
-              </button>
-            </div>
-            
-            <div ref={messagesEndRef}></div>
-          </div>
-
-          {/* Chat Input */}
-          <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-200 flex">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type a message..."
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-1 focus:ring-primary"
-            />
-            <button
-              type="submit"
-              className="bg-primary hover:bg-primary-dark text-white px-4 py-2 rounded-r-md transition-colors"
+    );
+  }
+  
+  return (
+    <div className="fixed bottom-6 right-6 w-80 sm:w-96 bg-white rounded-lg shadow-xl z-50 flex flex-col overflow-hidden max-h-[80vh]">
+      {/* Chat Header */}
+      <div className="bg-primary text-white p-4 flex justify-between items-center">
+        <h3 className="font-semibold">Swift Ride Support</h3>
+        <button 
+          onClick={toggleChat}
+          className="text-white hover:text-gray-200 transition-colors"
+          aria-label="Close chat"
+        >
+          <i className="fas fa-times"></i>
+        </button>
+      </div>
+      
+      {/* Chat Messages */}
+      <div className="flex-1 p-4 overflow-y-auto max-h-[400px]">
+        {messages.map((message) => (
+          <div 
+            key={message.id} 
+            className={`mb-4 flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+          >
+            <div 
+              className={`max-w-[80%] p-3 rounded-lg ${
+                message.sender === 'user' 
+                  ? 'bg-primary text-white rounded-br-none' 
+                  : 'bg-gray-100 text-gray-800 rounded-bl-none'
+              }`}
             >
-              <i className="fas fa-paper-plane"></i>
-            </button>
-          </form>
-        </div>
-      )}
+              <p className="text-sm">{message.text}</p>
+            </div>
+          </div>
+        ))}
+        
+        {isTyping && (
+          <div className="mb-4 flex justify-start">
+            <div className="max-w-[80%] p-3 rounded-lg bg-gray-100 text-gray-800 rounded-bl-none">
+              <div className="flex space-x-1">
+                <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce"></div>
+                <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-2 h-2 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        <div ref={messagesEndRef}></div>
+      </div>
+
+      {/* Clear Chat Button - Moved to bottom */}
+      <div className="px-4 pb-2">
+        <button
+          onClick={clearConversation}
+          className="w-full text-sm opacity-50 hover:opacity-100 text-center py-1 text-gray-500"
+        >
+          Clear Conversation
+        </button>
+      </div>
+      
+      {/* Chat Input */}
+      <form onSubmit={handleSubmit} className="border-t p-4 flex items-center">
+        <input
+          type="text"
+          value={input}
+          onChange={handleInputChange}
+          placeholder="Type a message..."
+          className="flex-1 border border-gray-300 rounded-l-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+        />
+        <button
+          type="submit"
+          className="bg-primary text-white px-4 py-2 rounded-r-lg hover:bg-primary-dark transition-colors"
+          disabled={!input.trim()}
+        >
+          <i className="fas fa-paper-plane"></i>
+        </button>
+      </form>
     </div>
   );
 };

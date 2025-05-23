@@ -79,39 +79,37 @@ const Home = () => {
                 </div>
               </div>
               
-              {/* Right section - How It Works */}
-              <div className="bg-gray-50 rounded-lg p-6 shadow-lg">
-                <div className="space-y-6">
-                  <div className="flex items-start">
-                    <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">1</div>
-                    <div>
-                      <h4 className="font-medium mb-1">Choose Your Vehicle</h4>
-                      <p className="text-gray-600">Browse our extensive fleet and select the vehicle that meets your needs.</p>
-                    </div>
+              {/* Right section - How It Works - Removed card styling */}
+              <div className="space-y-6 bg-gray-100 p-6 rounded-lg">
+                <div className="flex items-start">
+                  <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">1</div>
+                  <div>
+                    <h4 className="font-medium mb-1">Choose Your Vehicle</h4>
+                    <p className="text-gray-600">Browse our extensive fleet and select the vehicle that meets your needs.</p>
                   </div>
-                  
-                  <div className="flex items-start">
-                    <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">2</div>
-                    <div>
-                      <h4 className="font-medium mb-1">Select Rental Details</h4>
-                      <p className="text-gray-600">Pick your rental duration, driver option, and specify your locations.</p>
-                    </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">2</div>
+                  <div>
+                    <h4 className="font-medium mb-1">Select Rental Details</h4>
+                    <p className="text-gray-600">Pick your rental duration, driver option, and specify your locations.</p>
                   </div>
-                  
-                  <div className="flex items-start">
-                    <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">3</div>
-                    <div>
-                      <h4 className="font-medium mb-1">Complete Booking</h4>
-                      <p className="text-gray-600">Fill in your details, confirm your booking, and make a secure payment.</p>
-                    </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">3</div>
+                  <div>
+                    <h4 className="font-medium mb-1">Complete Booking</h4>
+                    <p className="text-gray-600">Fill in your details, confirm your booking, and make a secure payment.</p>
                   </div>
-                  
-                  <div className="flex items-start">
-                    <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">4</div>
-                    <div>
-                      <h4 className="font-medium mb-1">Enjoy Your Ride</h4>
-                      <p className="text-gray-600">Pick up your vehicle at the scheduled time and enjoy your journey!</p>
-                    </div>
+                </div>
+                
+                <div className="flex items-start">
+                  <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">4</div>
+                  <div>
+                    <h4 className="font-medium mb-1">Enjoy Your Ride</h4>
+                    <p className="text-gray-600">Pick up your vehicle at the scheduled time and enjoy your journey!</p>
                   </div>
                 </div>
               </div>

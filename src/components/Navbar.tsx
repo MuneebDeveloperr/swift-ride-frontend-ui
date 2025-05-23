@@ -21,8 +21,10 @@ const Navbar = () => {
   // Handle outside clicks for dropdowns
   useOnClickOutside(vehicleDropdownRef, () => setVehicleDropdownOpen(false));
   useOnClickOutside(profileDropdownRef, () => setProfileDropdownOpen(false));
-  useOnClickOutside(mobileMenuRef, () => setMobileMenuOpen(false));
-  useOnClickOutside(mobileVehicleDropdownRef, () => setVehicleDropdownOpen(false));
+  useOnClickOutside(mobileMenuRef, () => {
+    setMobileMenuOpen(false);
+    setVehicleDropdownOpen(false);
+  });
 
   useEffect(() => {
     const handleScroll = () => {
@@ -58,12 +60,20 @@ const Navbar = () => {
   // Toggle mobile menu
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+    // Close vehicle dropdown when mobile menu is toggled
+    setVehicleDropdownOpen(false);
   };
 
-  // Toggle mobile vehicle dropdown
+  // Toggle mobile vehicle dropdown - Fixed to work properly
   const toggleMobileVehicleDropdown = (e: React.MouseEvent) => {
     e.stopPropagation();
     setVehicleDropdownOpen(!vehicleDropdownOpen);
+  };
+
+  // Close vehicle dropdown when clicking on a vehicle link
+  const handleVehicleLinkClick = () => {
+    setVehicleDropdownOpen(false);
+    setMobileMenuOpen(false);
   };
 
   return (
@@ -182,13 +192,13 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Fixed dropdown behavior */}
         <div 
           ref={mobileMenuRef}
           className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} pt-4 absolute top-full left-0 w-full bg-white shadow-lg z-40`}
         >
           <div className="flex flex-col space-y-4 pb-4 max-h-[80vh] overflow-y-auto px-4">
-            <Link to="/" className="nav-link">Home</Link>
+            <Link to="/" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>
             
             {/* Mobile Vehicle Dropdown - Fixed to toggle properly */}
             <div ref={mobileVehicleDropdownRef}>
@@ -202,16 +212,16 @@ const Navbar = () => {
               
               {vehicleDropdownOpen && (
                 <div className="pl-4 flex flex-col space-y-2 mt-2">
-                  <Link to="/cars" className="nav-link">Cars</Link>
-                  <Link to="/buses" className="nav-link">Buses</Link>
-                  <Link to="/minibuses" className="nav-link">Mini Buses</Link>
-                  <Link to="/coasters" className="nav-link">Coasters</Link>
+                  <Link to="/cars" className="nav-link" onClick={handleVehicleLinkClick}>Cars</Link>
+                  <Link to="/buses" className="nav-link" onClick={handleVehicleLinkClick}>Buses</Link>
+                  <Link to="/minibuses" className="nav-link" onClick={handleVehicleLinkClick}>Mini Buses</Link>
+                  <Link to="/coasters" className="nav-link" onClick={handleVehicleLinkClick}>Coasters</Link>
                 </div>
               )}
             </div>
             
-            <Link to="/about" className="nav-link">About Us</Link>
-            <Link to="/contact" className="nav-link">Contact</Link>
+            <Link to="/about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+            <Link to="/contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
             
             {/* Mobile Search */}
             <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-full px-3 py-2">
@@ -237,11 +247,14 @@ const Navbar = () => {
                   <span className="font-medium">{user.name}</span>
                 </div>
                 <div className="flex flex-col space-y-2">
-                  <Link to="/profile" className="nav-link">Profile</Link>
-                  <Link to="/dashboard" className="nav-link">Dashboard</Link>
-                  <Link to="/settings" className="nav-link">Settings</Link>
+                  <Link to="/profile" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Profile</Link>
+                  <Link to="/dashboard" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
+                  <Link to="/settings" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Settings</Link>
                   <button 
-                    onClick={logout}
+                    onClick={() => {
+                      logout();
+                      setMobileMenuOpen(false);
+                    }}
                     className="text-left text-red-500 hover:text-red-700 flex items-center"
                   >
                     <i className="fas fa-sign-out-alt mr-2"></i> Logout
@@ -250,10 +263,10 @@ const Navbar = () => {
               </div>
             ) : (
               <div className="flex flex-col space-y-2 border-t border-gray-200 pt-4">
-                <Link to="/login" className="btn-primary w-full text-center">
+                <Link to="/login" className="btn-primary w-full text-center" onClick={() => setMobileMenuOpen(false)}>
                   Login
                 </Link>
-                <Link to="/signup" className="btn-secondary w-full text-center">
+                <Link to="/signup" className="btn-secondary w-full text-center" onClick={() => setMobileMenuOpen(false)}>
                   Sign Up
                 </Link>
               </div>

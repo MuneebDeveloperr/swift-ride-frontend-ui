@@ -174,9 +174,9 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
         </button>
       </div>
       
-      {/* Filters Sidebar */}
+      {/* Filters Sidebar - Made sticky */}
       <div className={`${showFilters ? 'block' : 'hidden'} lg:block lg:w-64 flex-shrink-0`}>
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6 lg:mb-0 lg:sticky lg:top-24">
+        <div className="bg-white rounded-lg shadow-md p-4 mb-6 lg:mb-0 lg:sticky lg:top-20 max-h-[calc(100vh-5rem)] overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold">Filters</h3>
             <button

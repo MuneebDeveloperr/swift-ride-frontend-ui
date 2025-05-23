@@ -68,8 +68,8 @@ const Buses = () => {
       
       <Navbar />
       
-      <main className="pt-20 pb-16 bg-gray-50 min-h-screen">
-        <div className="container mx-auto px-4">
+      <main className="pt-20 pb-16 bg-gray-50 min-h-screen w-full">
+        <div className="content-container mx-auto animate-fade-in">
           <div className="py-8">
             <h1 className="text-3xl font-bold mb-2">Buses for Rent</h1>
             <p className="text-gray-600 mb-6">
@@ -77,7 +77,7 @@ const Buses = () => {
               Choose from top brands like Yutong, Hino, Isuzu, and MAN for a comfortable journey.
             </p>
             
-            <div className="lg:flex">
+            <div className="lg:flex gap-6">
               {/* Filters */}
               <VehicleFilters 
                 vehicleType="bus"

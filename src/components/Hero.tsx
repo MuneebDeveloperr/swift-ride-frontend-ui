@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <section className="relative bg-gradient-to-r from-gray-900 to-gray-800 text-white min-h-[80vh] flex items-center">
+    <section className="relative min-h-[80vh] flex items-center w-full">
       {/* Background overlay */}
-      <div className="absolute inset-0 bg-black/40 z-10"></div>
+      <div className="absolute inset-0 bg-black/50 z-10"></div>
       
       {/* Background image */}
       <div 
@@ -16,26 +16,28 @@ const Hero = () => {
       ></div>
       
       {/* Content */}
-      <div className="container mx-auto px-4 relative z-20">
-        <div className="max-w-3xl">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium mb-6 font-poppins">
+      <div className="content-container mx-auto relative z-20 py-24 w-full">
+        <div className="max-w-3xl animate-fade-in">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium mb-6 font-poppins text-white">
             Premium Vehicle Rentals for Every Occasion
           </h1>
-          <p className="text-lg md:text-xl opacity-90 mb-8">
+          <p className="text-lg md:text-xl text-white/90 mb-8">
             Swift Ride offers premium car, bus, and coaster rentals for all your travel needs in Pakistan.
             Book online today for a seamless transportation experience.
           </p>
           <div className="flex flex-wrap gap-4">
             <Link 
               to="/cars" 
-              className="btn-primary px-6 py-3 text-lg"
+              className="btn-primary px-6 py-3 text-lg hover:scale-105 transition-transform duration-300"
+              aria-label="Book a ride now"
             >
               Book Now
               <i className="fas fa-arrow-right ml-2"></i>
             </Link>
             <Link 
               to="/cars" 
-              className="btn-secondary px-6 py-3 text-lg"
+              className="bg-white text-primary hover:bg-gray-100 px-6 py-3 text-lg rounded-md transition-all duration-300 font-medium hover:scale-105"
+              aria-label="Explore available vehicles"
             >
               Explore Vehicles
             </Link>

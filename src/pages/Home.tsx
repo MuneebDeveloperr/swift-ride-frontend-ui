@@ -19,25 +19,25 @@ const Home = () => {
 
       <Navbar />
       
-      <main>
+      <main className="w-full">
         <Hero />
         
         <VehicleCategories />
         
         {/* Redesigned Booking Section */}
-        <section className="py-16 bg-white">
-          <div className="container mx-auto px-4">
+        <section className="py-16 bg-white w-full">
+          <div className="content-container mx-auto">
             <h2 className="text-3xl font-bold mb-10 text-center">Book Your Vehicle Now</h2>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
               {/* Left section - Feature list */}
-              <div>
+              <div className="animate-fade-in">
                 <p className="text-gray-600 mb-8">
                   At Swift Ride, we make vehicle rental easy and affordable for everyone. With a wide selection of cars, buses, mini buses, and coasters, you're sure to find the perfect vehicle for your needs.
                 </p>
                 
                 <div className="space-y-6">
-                  <div className="flex items-start">
+                  <div className="flex items-start transition-all duration-300 hover:translate-x-2">
                     <div className="bg-primary/10 p-3 rounded-full text-primary mr-4">
                       <i className="fas fa-check-circle"></i>
                     </div>
@@ -47,7 +47,7 @@ const Home = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-start">
+                  <div className="flex items-start transition-all duration-300 hover:translate-x-2">
                     <div className="bg-primary/10 p-3 rounded-full text-primary mr-4">
                       <i className="fas fa-clock"></i>
                     </div>
@@ -57,7 +57,7 @@ const Home = () => {
                     </div>
                   </div>
                   
-                  <div className="flex items-start">
+                  <div className="flex items-start transition-all duration-300 hover:translate-x-2">
                     <div className="bg-primary/10 p-3 rounded-full text-primary mr-4">
                       <i className="fas fa-car"></i>
                     </div>
@@ -67,7 +67,7 @@ const Home = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-start">
+                  <div className="flex items-start transition-all duration-300 hover:translate-x-2">
                     <div className="bg-primary/10 p-3 rounded-full text-primary mr-4">
                       <i className="fas fa-shield-alt"></i>
                     </div>
@@ -80,8 +80,8 @@ const Home = () => {
               </div>
               
               {/* Right section - How It Works - Removed card styling */}
-              <div className="space-y-6 bg-gray-100 p-6 rounded-lg">
-                <div className="flex items-start">
+              <div className="space-y-6 bg-gray-100 p-6 rounded-lg animate-fade-in">
+                <div className="flex items-start transition-all duration-300 hover:translate-x-2">
                   <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">1</div>
                   <div>
                     <h4 className="font-medium mb-1">Choose Your Vehicle</h4>
@@ -89,7 +89,7 @@ const Home = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-start">
+                <div className="flex items-start transition-all duration-300 hover:translate-x-2">
                   <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">2</div>
                   <div>
                     <h4 className="font-medium mb-1">Select Rental Details</h4>
@@ -97,7 +97,7 @@ const Home = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-start">
+                <div className="flex items-start transition-all duration-300 hover:translate-x-2">
                   <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">3</div>
                   <div>
                     <h4 className="font-medium mb-1">Complete Booking</h4>
@@ -105,7 +105,7 @@ const Home = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-start">
+                <div className="flex items-start transition-all duration-300 hover:translate-x-2">
                   <div className="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4">4</div>
                   <div>
                     <h4 className="font-medium mb-1">Enjoy Your Ride</h4>
@@ -117,7 +117,11 @@ const Home = () => {
             
             {/* Centered Explore Vehicles Button */}
             <div className="flex justify-center mt-8">
-              <Link to="/cars" className="btn-primary text-lg px-8 py-3">
+              <Link 
+                to="/cars" 
+                className="btn-primary text-lg px-8 py-3 hover:scale-105 transition-transform duration-300"
+                aria-label="Explore vehicle options"
+              >
                 Explore Vehicles
               </Link>
             </div>

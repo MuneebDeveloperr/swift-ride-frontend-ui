@@ -35,8 +35,8 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white pt-16 pb-6">
-      <div className="container mx-auto px-4">
+    <footer className="bg-gray-900 text-white pt-16 pb-6 w-full">
+      <div className="content-container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
           <div className="mb-8 md:mb-0">
@@ -129,14 +129,6 @@ const Footer = () => {
                 <i className="fas fa-paper-plane"></i>
               </button>
             </form>
-            <p className="mt-4 text-gray-400">
-              <i className="fas fa-envelope mr-2"></i> 
-              contactswiftride@gmail.com
-            </p>
-            <p className="mt-2 text-gray-400">
-              <i className="fas fa-map-marker-alt mr-2"></i> 
-              Swift Ride, Sargodha Road, Near Crescent Textile Mills, Faisalabad
-            </p>
           </div>
         </div>
 

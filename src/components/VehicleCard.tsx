@@ -111,6 +111,7 @@ const VehicleCard = ({ vehicle }: VehicleCardProps) => {
               <option value="12hour">12 Hour</option>
               <option value="2day">2 Day</option>
               <option value="3day">3 Day</option>
+              <option value="1week">1 Week</option>
             </select>
           </div>
           <div>

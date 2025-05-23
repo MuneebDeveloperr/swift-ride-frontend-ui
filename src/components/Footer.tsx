@@ -23,6 +23,17 @@ const Footer = () => {
     }
   };
 
+  // Scroll to top function for homepage link
+  const scrollToTop = (e: React.MouseEvent) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   return (
     <footer className="bg-gray-900 text-white pt-16 pb-6">
       <div className="container mx-auto px-4">
@@ -122,12 +133,16 @@ const Footer = () => {
               <i className="fas fa-envelope mr-2"></i> 
               contactswiftride@gmail.com
             </p>
+            <p className="mt-2 text-gray-400">
+              <i className="fas fa-map-marker-alt mr-2"></i> 
+              Swift Ride, Sargodha Road, Near Crescent Textile Mills, Faisalabad
+            </p>
           </div>
         </div>
 
         {/* Copyright */}
         <div className="border-t border-gray-800 mt-12 pt-6 text-center text-gray-400">
-          <p>© 2025 <Link to="/" className="hover:text-primary transition-colors">Swift Ride</Link>. All rights reserved.</p>
+          <p>© 2025 <Link to="/" onClick={scrollToTop} className="hover:text-primary transition-colors">Swift Ride</Link>. All rights reserved.</p>
         </div>
       </div>
     </footer>

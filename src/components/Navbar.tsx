@@ -15,10 +15,12 @@ const Navbar = () => {
   
   const vehicleDropdownRef = useRef<HTMLDivElement>(null);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   // Handle outside clicks for dropdowns
   useOnClickOutside(vehicleDropdownRef, () => setVehicleDropdownOpen(false));
   useOnClickOutside(profileDropdownRef, () => setProfileDropdownOpen(false));
+  useOnClickOutside(mobileMenuRef, () => setMobileMenuOpen(false));
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,6 +30,12 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setVehicleDropdownOpen(false);
+  }, [location.pathname]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,13 +52,18 @@ const Navbar = () => {
     setProfileDropdownOpen(!profileDropdownOpen);
   };
 
+  // Toggle mobile menu
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
         isScrolled ? "bg-white shadow-md py-2" : "bg-white/90 py-4"
       }`}
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link to="/" className="flex items-center">
@@ -117,7 +130,7 @@ const Navbar = () => {
                 </button>
                 
                 {/* Profile Dropdown - Improved styling */}
-                <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 ${profileDropdownOpen ? "block" : "hidden"}`}>
+                <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50 ${profileDropdownOpen ? "block" : "hidden"}`}>
                   <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setProfileDropdownOpen(false)}>Profile</Link>
                   <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setProfileDropdownOpen(false)}>Dashboard</Link>
                   <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setProfileDropdownOpen(false)}>Settings</Link>
@@ -147,7 +160,7 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              onClick={toggleMobileMenu}
               className="text-gray-700 focus:outline-none"
             >
               <i className={`fas ${mobileMenuOpen ? "fa-times" : "fa-bars"} text-xl`}></i>
@@ -156,14 +169,17 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Navigation */}
-        <div className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} pt-4`}>
-          <div className="flex flex-col space-y-4 pb-4">
+        <div 
+          ref={mobileMenuRef}
+          className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} pt-4 absolute top-full left-0 w-full bg-white shadow-lg z-40`}
+        >
+          <div className="flex flex-col space-y-4 pb-4 max-h-[80vh] overflow-y-auto px-4">
             <Link to="/" className="nav-link">Home</Link>
             
             {/* Mobile Vehicle Dropdown */}
             <button 
               onClick={() => setVehicleDropdownOpen(!vehicleDropdownOpen)}
-              className="flex justify-between items-center nav-link"
+              className="flex justify-between items-center nav-link text-left"
             >
               Vehicles <i className={`fas ${vehicleDropdownOpen ? "fa-chevron-up" : "fa-chevron-down"} text-xs`}></i>
             </button>

@@ -74,7 +74,7 @@ const Contact = () => {
                     </div>
                     <div>
                       <h3 className="font-medium mb-1">Our Location</h3>
-                      <p className="text-gray-600">General Bus Stand Faisalabad, Pakistan</p>
+                      <p className="text-gray-600">Swift Ride, Sargodha Road, Near Crescent Textile Mills, Faisalabad</p>
                     </div>
                   </div>
                   
@@ -230,12 +230,13 @@ const Contact = () => {
             <h2 className="text-xl font-semibold mb-6">Our Location</h2>
             <div className="h-96 rounded-lg overflow-hidden">
               <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3404.813976422993!2d73.08635061513558!3d31.420029981406!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x392243596d78ecc3%3A0x5339e3d3ff8fcf59!2sGeneral%20Bus%20Stand%2C%20Faisalabad%2C%20Punjab!5e0!3m2!1sen!2s!4v1616569887319!5m2!1sen!2s" 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2734.488285553182!2d73.08629206842288!3d31.449741938139816!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39224205235bcd5b%3A0x8337c12ad0853b0a!2sAl-Halal%20Travels!5e1!3m2!1sen!2s!4v1748013935923!5m2!1sen!2s" 
                 width="100%" 
                 height="100%" 
                 style={{ border: 0 }} 
                 allowFullScreen 
                 loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
                 title="Swift Ride Location"
               ></iframe>
             </div>

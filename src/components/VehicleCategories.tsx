@@ -46,27 +46,29 @@ const VehicleCategories = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {categoryData.map((category, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-              <div className="h-48 overflow-hidden">
-                <img 
-                  src={category.image} 
-                  alt={category.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center mb-3">
-                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
-                    <i className={`fas ${category.icon}`}></i>
-                  </div>
-                  <h3 className="text-xl font-semibold ml-3">{category.title}</h3>
+            <Link to={category.link} key={index} className="block">
+              <div className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer">
+                <div className="h-48 overflow-hidden">
+                  <img 
+                    src={category.image} 
+                    alt={category.title}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
-                <p className="text-gray-600 mb-4">{category.description}</p>
-                <Link to={category.link} className="text-primary hover:text-primary-dark font-medium flex items-center">
-                  View Vehicles <i className="fas fa-arrow-right ml-2"></i>
-                </Link>
+                <div className="p-6">
+                  <div className="flex items-center mb-3">
+                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white">
+                      <i className={`fas ${category.icon}`}></i>
+                    </div>
+                    <h3 className="text-xl font-semibold ml-3">{category.title}</h3>
+                  </div>
+                  <p className="text-gray-600 mb-4">{category.description}</p>
+                  <div className="text-primary hover:text-primary-dark font-medium flex items-center">
+                    View Vehicles <i className="fas fa-arrow-right ml-2"></i>
+                  </div>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

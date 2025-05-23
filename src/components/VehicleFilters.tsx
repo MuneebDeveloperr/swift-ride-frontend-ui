@@ -176,7 +176,7 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
       
       {/* Filters Sidebar */}
       <div className={`${showFilters ? 'block' : 'hidden'} lg:block lg:w-64 flex-shrink-0`}>
-        <div className="bg-white rounded-lg shadow-md p-4 mb-6 lg:mb-0 sticky top-24">
+        <div className="bg-white rounded-lg shadow-md p-4 mb-6 lg:mb-0 lg:sticky lg:top-24">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold">Filters</h3>
             <button
@@ -299,6 +299,21 @@ const VehicleFilters = ({ vehicleType, brands, locations, onFilterChange }: Filt
                 onValueChange={handlePriceChange}
                 className="my-4"
               />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-2 mt-3">
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">Min Price</label>
+                <div className="px-3 py-2 border border-gray-300 rounded text-sm">
+                  PKR {sliderValue[0].toLocaleString()}
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-600 mb-1">Max Price</label>
+                <div className="px-3 py-2 border border-gray-300 rounded text-sm">
+                  PKR {sliderValue[1].toLocaleString()}
+                </div>
+              </div>
             </div>
           </div>
         </div>

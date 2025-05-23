@@ -30,14 +30,14 @@ const Hero = () => {
               to="/cars" 
               className="btn-primary px-6 py-3 text-lg"
             >
-              Explore Vehicles
+              Book Now
               <i className="fas fa-arrow-right ml-2"></i>
             </Link>
             <Link 
-              to="/about" 
+              to="/cars" 
               className="btn-secondary px-6 py-3 text-lg"
             >
-              Learn More
+              Explore Vehicles
             </Link>
           </div>
         </div>

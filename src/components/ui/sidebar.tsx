@@ -321,7 +321,7 @@ const SidebarInset = React.forwardRef<
       ref={ref}
       className={cn(
         "relative flex min-h-svh flex-1 flex-col bg-background",
-        "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
+        "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
         className
       )}
       {...props}
@@ -432,9 +432,12 @@ const SidebarGroupLabel = React.forwardRef<
 >(({ className, asChild = false, ...props }, ref) => {
   const Comp = asChild ? Slot : "div"
 
+  // Fix for ref typing issue
+  const fixedRef = asChild ? (ref as any) : ref;
+
   return (
     <Comp
-      ref={ref as React.Ref<any>}
+      ref={fixedRef}
       data-sidebar="group-label"
       className={cn(
         "duration-200 flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opa] ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
@@ -452,10 +455,13 @@ const SidebarGroupAction = React.forwardRef<
   React.ComponentProps<"button"> & { asChild?: boolean }
 >(({ className, asChild = false, ...props }, ref) => {
   const Comp = asChild ? Slot : "button"
+  
+  // Fix for ref typing issue
+  const fixedRef = asChild ? (ref as any) : ref;
 
   return (
     <Comp
-      ref={ref as React.Ref<any>}
+      ref={fixedRef}
       data-sidebar="group-action"
       className={cn(
         "absolute right-3 top-3.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-none ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
@@ -554,9 +560,12 @@ const SidebarMenuButton = React.forwardRef<
     const Comp = asChild ? Slot : "button"
     const { isMobile, state } = useSidebar()
 
+    // Fix for ref typing issue
+    const fixedRef = asChild ? (ref as any) : ref;
+
     const button = (
       <Comp
-        ref={ref as React.Ref<any>}
+        ref={fixedRef}
         data-sidebar="menu-button"
         data-size={size}
         data-active={isActive}
@@ -599,9 +608,12 @@ const SidebarMenuAction = React.forwardRef<
 >(({ className, asChild = false, showOnHover = false, ...props }, ref) => {
   const Comp = asChild ? Slot : "button"
 
+  // Fix for ref typing issue
+  const fixedRef = asChild ? (ref as any) : ref;
+
   return (
     <Comp
-      ref={ref as React.Ref<any>}
+      ref={fixedRef}
       data-sidebar="menu-action"
       className={cn(
         "absolute right-1 top-1.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-none ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0",
@@ -713,9 +725,12 @@ const SidebarMenuSubButton = React.forwardRef<
 >(({ asChild = false, size = "md", isActive, className, ...props }, ref) => {
   const Comp = asChild ? Slot : "a"
 
+  // Fix for ref typing issue
+  const fixedRef = asChild ? (ref as any) : ref;
+
   return (
     <Comp
-      ref={ref as React.Ref<any>}
+      ref={fixedRef}
       data-sidebar="menu-sub-button"
       data-size={size}
       data-active={isActive}

@@ -16,31 +16,35 @@ const Coasters = () => {
   const brands = [...new Set(coastersData.map(coaster => coaster.brand))];
   const locations = [...new Set(coastersData.map(coaster => coaster.location))];
   
-  // Apply filters
+  // Apply filters with new checkbox-based logic
   const handleFilterChange = (filters: any) => {
     let filtered = [...coastersData];
     
-    // Apply brand filter
-    if (filters.brand !== "all") {
-      const selectedBrands = filters.brand.split(",");
+    // Apply brand filter (multiple selections)
+    if (filters.brands && filters.brands.length > 0) {
       filtered = filtered.filter(coaster => 
-        selectedBrands.includes(coaster.brand.toLowerCase())
+        filters.brands.some((brand: string) => 
+          coaster.brand.toLowerCase().includes(brand.toLowerCase())
+        )
       );
     }
     
-    // Apply location filter
-    if (filters.location !== "all") {
-      const selectedLocations = filters.location.split(",");
+    // Apply location filter (multiple selections)
+    if (filters.locations && filters.locations.length > 0) {
       filtered = filtered.filter(coaster => 
-        selectedLocations.includes(coaster.location.toLowerCase())
+        filters.locations.some((location: string) => 
+          coaster.location.toLowerCase().includes(location.toLowerCase())
+        )
       );
     }
     
     // Apply price filter
-    filtered = filtered.filter(coaster => 
-      coaster.pricePerDay >= filters.priceRange[0] && 
-      coaster.pricePerDay <= filters.priceRange[1]
-    );
+    if (filters.priceRange) {
+      filtered = filtered.filter(coaster => 
+        coaster.pricePerDay >= filters.priceRange.min && 
+        coaster.pricePerDay <= filters.priceRange.max
+      );
+    }
     
     // Apply sorting
     if (filters.sortBy === "price_low_high") {

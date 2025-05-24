@@ -16,31 +16,35 @@ const Buses = () => {
   const brands = [...new Set(busesData.map(bus => bus.brand))];
   const locations = [...new Set(busesData.map(bus => bus.location))];
   
-  // Apply filters
+  // Apply filters with new checkbox-based logic
   const handleFilterChange = (filters: any) => {
     let filtered = [...busesData];
     
-    // Apply brand filter
-    if (filters.brand !== "all") {
-      const selectedBrands = filters.brand.split(",");
+    // Apply brand filter (multiple selections)
+    if (filters.brands && filters.brands.length > 0) {
       filtered = filtered.filter(bus => 
-        selectedBrands.includes(bus.brand.toLowerCase())
+        filters.brands.some((brand: string) => 
+          bus.brand.toLowerCase().includes(brand.toLowerCase())
+        )
       );
     }
     
-    // Apply location filter
-    if (filters.location !== "all") {
-      const selectedLocations = filters.location.split(",");
+    // Apply location filter (multiple selections)
+    if (filters.locations && filters.locations.length > 0) {
       filtered = filtered.filter(bus => 
-        selectedLocations.includes(bus.location.toLowerCase())
+        filters.locations.some((location: string) => 
+          bus.location.toLowerCase().includes(location.toLowerCase())
+        )
       );
     }
     
     // Apply price filter
-    filtered = filtered.filter(bus => 
-      bus.pricePerDay >= filters.priceRange[0] && 
-      bus.pricePerDay <= filters.priceRange[1]
-    );
+    if (filters.priceRange) {
+      filtered = filtered.filter(bus => 
+        bus.pricePerDay >= filters.priceRange.min && 
+        bus.pricePerDay <= filters.priceRange.max
+      );
+    }
     
     // Apply sorting
     if (filters.sortBy === "price_low_high") {

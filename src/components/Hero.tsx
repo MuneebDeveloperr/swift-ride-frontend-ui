@@ -7,9 +7,9 @@ const Hero = () => {
       {/* Background overlay */}
       <div className="absolute inset-0 bg-black/50 z-10"></div>
       
-      {/* Background image - Updated with a travel/vehicle themed image */}
+      {/* Background image - Updated with responsive sizing */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat w-full h-full object-cover md:h-[550px]"
         style={{ 
           backgroundImage: "url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')" 
         }}

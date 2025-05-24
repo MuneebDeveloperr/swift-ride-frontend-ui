@@ -16,7 +16,6 @@ const Navbar = () => {
   const vehicleDropdownRef = useRef<HTMLDivElement>(null);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const mobileVehicleDropdownRef = useRef<HTMLDivElement>(null);
 
   // Handle outside clicks for dropdowns
   useOnClickOutside(vehicleDropdownRef, () => setVehicleDropdownOpen(false));
@@ -57,11 +56,13 @@ const Navbar = () => {
     setProfileDropdownOpen(!profileDropdownOpen);
   };
 
-  // Toggle mobile menu
+  // Toggle mobile menu - Fixed logic
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
-    // Close vehicle dropdown when mobile menu is toggled
-    setVehicleDropdownOpen(false);
+    if (mobileMenuOpen) {
+      // If closing mobile menu, also close vehicle dropdown
+      setVehicleDropdownOpen(false);
+    }
   };
 
   // Toggle mobile vehicle dropdown - Fixed to work properly
@@ -121,9 +122,8 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {/* Search and Auth - Moved search to align next to login button */}
+            {/* Search and Auth */}
             <div className="hidden md:flex items-center space-x-4">
-              {/* Search Form - Moved here */}
               <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-full px-3 py-1">
                 <input
                   type="text"
@@ -151,7 +151,7 @@ const Navbar = () => {
                     <i className={`fas fa-chevron-${profileDropdownOpen ? "up" : "down"} text-xs`}></i>
                   </button>
                   
-                  {/* Profile Dropdown - Improved styling */}
+                  {/* Profile Dropdown */}
                   <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50 ${profileDropdownOpen ? "block" : "hidden"}`}>
                     <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setProfileDropdownOpen(false)}>Profile</Link>
                     <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setProfileDropdownOpen(false)}>Dashboard</Link>
@@ -201,7 +201,7 @@ const Navbar = () => {
             <Link to="/" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>
             
             {/* Mobile Vehicle Dropdown - Fixed to toggle properly */}
-            <div ref={mobileVehicleDropdownRef}>
+            <div>
               <button 
                 onClick={toggleMobileVehicleDropdown}
                 className="flex justify-between items-center nav-link text-left w-full"

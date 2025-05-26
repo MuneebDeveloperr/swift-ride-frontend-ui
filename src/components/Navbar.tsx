@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -13,18 +12,23 @@ const Navbar = () => {
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
   const vehicleDropdownRef = useRef<HTMLDivElement>(null);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
-  // Handle outside clicks for dropdowns
-  useOnClickOutside(vehicleDropdownRef, () => setVehicleDropdownOpen(false));
-  useOnClickOutside(profileDropdownRef, () => setProfileDropdownOpen(false));
-  useOnClickOutside(mobileMenuRef, () => {
-    setMobileMenuOpen(false);
-    setVehicleDropdownOpen(false);
+  // Enhanced outside click handling for mobile menu
+  useOnClickOutside(mobileMenuRef, (event) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.mobile-menu-button')) {
+      setMobileMenuOpen(false);
+      setVehicleDropdownOpen(false);
+    }
   });
 
+  useOnClickOutside(vehicleDropdownRef, () => setVehicleDropdownOpen(false));
+  useOnClickOutside(profileDropdownRef, () => setProfileDropdownOpen(false));
+
+  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -34,47 +38,35 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu when route changes
+  // Enhanced route change handling
   useEffect(() => {
     setMobileMenuOpen(false);
     setVehicleDropdownOpen(false);
+    setProfileDropdownOpen(false);
   }, [location.pathname]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Searching for:", searchQuery);
+    setMobileMenuOpen(false);
   };
 
-  // Toggle dropdown instead of just opening
+  // Improved toggle handlers
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+    if (mobileMenuOpen) {
+      setVehicleDropdownOpen(false);
+      setProfileDropdownOpen(false);
+    }
+  };
+
   const toggleVehicleDropdown = (e: React.MouseEvent) => {
     e.stopPropagation();
     setVehicleDropdownOpen(!vehicleDropdownOpen);
   };
 
-  // Toggle profile dropdown
   const toggleProfileDropdown = () => {
     setProfileDropdownOpen(!profileDropdownOpen);
-  };
-
-  // Toggle mobile menu - Fixed logic
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-    if (mobileMenuOpen) {
-      // If closing mobile menu, also close vehicle dropdown
-      setVehicleDropdownOpen(false);
-    }
-  };
-
-  // Toggle mobile vehicle dropdown - Fixed to work properly
-  const toggleMobileVehicleDropdown = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setVehicleDropdownOpen(!vehicleDropdownOpen);
-  };
-
-  // Close vehicle dropdown when clicking on a vehicle link
-  const handleVehicleLinkClick = () => {
-    setVehicleDropdownOpen(false);
-    setMobileMenuOpen(false);
   };
 
   return (
@@ -84,7 +76,7 @@ const Navbar = () => {
       }`}
     >
       <div className="full-width-container">
-        <div className="content-container mx-auto">
+        <div className="content-container mx-auto px-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
             <Link to="/" className="flex items-center">
@@ -97,16 +89,15 @@ const Navbar = () => {
                 Home
               </Link>
               
-              {/* Vehicle Dropdown - Fixed to toggle properly */}
+              {/* Desktop Vehicle Dropdown */}
               <div className="relative group" ref={vehicleDropdownRef}>
                 <button 
-                  aria-label="Vehicle dropdown menu"
                   className={`nav-link flex items-center ${["/cars", "/buses", "/minibuses", "/coasters"].includes(location.pathname) ? "active-nav-link" : ""}`}
                   onClick={toggleVehicleDropdown}
                 >
-                  Vehicles <i className={`fas fa-chevron-${vehicleDropdownOpen ? "up" : "down"} ml-1 text-xs`}></i>
+                  Vehicles <i className={`fas fa-chevron-${vehicleDropdownOpen ? "up" : "down"} ml-1 text-xs transition-transform duration-200`}></i>
                 </button>
-                <div className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 transition-all duration-300 ${vehicleDropdownOpen ? "opacity-100 visible" : "opacity-0 invisible"}`}>
+                <div className={`absolute left-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 transition-all duration-200 ${vehicleDropdownOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2"}`}>
                   <Link to="/cars" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setVehicleDropdownOpen(false)}>Cars</Link>
                   <Link to="/buses" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setVehicleDropdownOpen(false)}>Buses</Link>
                   <Link to="/minibuses" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setVehicleDropdownOpen(false)}>Mini Buses</Link>
@@ -122,7 +113,7 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {/* Search and Auth */}
+            {/* Desktop Search and Auth */}
             <div className="hidden md:flex items-center space-x-4">
               <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-full px-3 py-1">
                 <input
@@ -142,17 +133,15 @@ const Navbar = () => {
                   <button
                     onClick={toggleProfileDropdown}
                     className="flex items-center space-x-2 text-sm font-medium text-gray-700 hover:text-gray-900"
-                    aria-label="User profile dropdown"
                   >
                     <span className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">
                       {user.name.charAt(0).toUpperCase()}
                     </span>
                     <span>{user.name.split(" ")[0]}</span>
-                    <i className={`fas fa-chevron-${profileDropdownOpen ? "up" : "down"} text-xs`}></i>
+                    <i className={`fas fa-chevron-${profileDropdownOpen ? "up" : "down"} text-xs transition-transform duration-200`}></i>
                   </button>
                   
-                  {/* Profile Dropdown */}
-                  <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50 ${profileDropdownOpen ? "block" : "hidden"}`}>
+                  <div className={`absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 transition-all duration-200 ${profileDropdownOpen ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2"}`}>
                     <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setProfileDropdownOpen(false)}>Profile</Link>
                     <Link to="/dashboard" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setProfileDropdownOpen(false)}>Dashboard</Link>
                     <Link to="/settings" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" onClick={() => setProfileDropdownOpen(false)}>Settings</Link>
@@ -179,100 +168,161 @@ const Navbar = () => {
               )}
             </div>
 
-            {/* Mobile menu button */}
-            <div className="md:hidden flex items-center">
-              <button
-                onClick={toggleMobileMenu}
-                className="text-gray-700 focus:outline-none"
-                aria-label="Toggle mobile menu"
-              >
-                <i className={`fas ${mobileMenuOpen ? "fa-times" : "fa-bars"} text-xl`}></i>
-              </button>
-            </div>
+            {/* Mobile Menu Button */}
+            <button
+              onClick={toggleMobileMenu}
+              className="mobile-menu-button md:hidden text-gray-700 focus:outline-none z-50 relative"
+              aria-label="Toggle mobile menu"
+            >
+              <i className={`fas ${mobileMenuOpen ? "fa-times" : "fa-bars"} text-xl transition-all duration-200`}></i>
+            </button>
           </div>
         </div>
 
-        {/* Mobile Navigation - Fixed dropdown behavior */}
+        {/* Mobile Navigation - Sliding Panel */}
         <div 
           ref={mobileMenuRef}
-          className={`md:hidden ${mobileMenuOpen ? "block" : "hidden"} pt-4 absolute top-full left-0 w-full bg-white shadow-lg z-40`}
+          className={`md:hidden fixed top-0 right-0 w-[80%] h-screen bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-40 ${
+            mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
         >
-          <div className="flex flex-col space-y-4 pb-4 max-h-[80vh] overflow-y-auto px-4">
-            <Link to="/" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-            
-            {/* Mobile Vehicle Dropdown - Fixed to toggle properly */}
-            <div>
-              <button 
-                onClick={toggleMobileVehicleDropdown}
-                className="flex justify-between items-center nav-link text-left w-full"
-                aria-label="Vehicle dropdown menu"
-              >
-                Vehicles <i className={`fas ${vehicleDropdownOpen ? "fa-chevron-up" : "fa-chevron-down"} text-xs`}></i>
-              </button>
-              
-              {vehicleDropdownOpen && (
-                <div className="pl-4 flex flex-col space-y-2 mt-2">
-                  <Link to="/cars" className="nav-link" onClick={handleVehicleLinkClick}>Cars</Link>
-                  <Link to="/buses" className="nav-link" onClick={handleVehicleLinkClick}>Buses</Link>
-                  <Link to="/minibuses" className="nav-link" onClick={handleVehicleLinkClick}>Mini Buses</Link>
-                  <Link to="/coasters" className="nav-link" onClick={handleVehicleLinkClick}>Coasters</Link>
-                </div>
-              )}
-            </div>
-            
-            <Link to="/about" className="nav-link" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
-            <Link to="/contact" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
-            
-            {/* Mobile Search */}
-            <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-full px-3 py-2">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="bg-transparent border-none focus:outline-none text-sm w-full"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button type="submit" className="ml-2 text-gray-600" aria-label="Search">
-                <i className="fas fa-search"></i>
-              </button>
-            </form>
-            
-            {/* Mobile Auth */}
-            {user ? (
-              <div className="border-t border-gray-200 pt-4">
-                <div className="flex items-center mb-4">
-                  <span className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center mr-2">
+          {/* Mobile Menu Content */}
+          <div className="flex flex-col h-full">
+            {/* User Profile Section */}
+            {user && (
+              <div className="p-4 bg-primary/5 border-b border-gray-200">
+                <div className="flex items-center space-x-3">
+                  <span className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center text-lg">
                     {user.name.charAt(0).toUpperCase()}
                   </span>
-                  <span className="font-medium">{user.name}</span>
+                  <div>
+                    <p className="font-medium text-gray-900">{user.name}</p>
+                    <p className="text-sm text-gray-600">{user.email}</p>
+                  </div>
                 </div>
-                <div className="flex flex-col space-y-2">
-                  <Link to="/profile" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Profile</Link>
-                  <Link to="/dashboard" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Dashboard</Link>
-                  <Link to="/settings" className="nav-link" onClick={() => setMobileMenuOpen(false)}>Settings</Link>
+              </div>
+            )}
+
+            {/* Search Bar */}
+            <div className="p-4 border-b border-gray-200">
+              <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-full px-4 py-2">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="bg-transparent border-none focus:outline-none text-sm w-full"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button type="submit" className="ml-2 text-gray-600">
+                  <i className="fas fa-search"></i>
+                </button>
+              </form>
+            </div>
+
+            {/* Navigation Links */}
+            <div className="flex-1 overflow-y-auto">
+              <div className="p-4 space-y-4">
+                <Link to="/" 
+                  className={`block py-2 ${location.pathname === "/" ? "text-primary font-medium" : "text-gray-700"}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Home
+                </Link>
+
+                {/* Mobile Vehicle Dropdown */}
+                <div>
+                  <button 
+                    onClick={toggleVehicleDropdown}
+                    className="flex items-center justify-between w-full py-2 text-left"
+                  >
+                    <span className={`${["/cars", "/buses", "/minibuses", "/coasters"].includes(location.pathname) ? "text-primary font-medium" : "text-gray-700"}`}>
+                      Vehicles
+                    </span>
+                    <i className={`fas fa-chevron-${vehicleDropdownOpen ? "up" : "down"} text-xs transition-transform duration-200`}></i>
+                  </button>
+                  
+                  <div className={`pl-4 space-y-2 overflow-hidden transition-all duration-200 ${vehicleDropdownOpen ? "max-h-48 opacity-100 mt-2" : "max-h-0 opacity-0"}`}>
+                    <Link to="/cars" className="block py-2 text-gray-600 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Cars</Link>
+                    <Link to="/buses" className="block py-2 text-gray-600 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Buses</Link>
+                    <Link to="/minibuses" className="block py-2 text-gray-600 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Mini Buses</Link>
+                    <Link to="/coasters" className="block py-2 text-gray-600 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Coasters</Link>
+                  </div>
+                </div>
+
+                <Link to="/about" 
+                  className={`block py-2 ${location.pathname === "/about" ? "text-primary font-medium" : "text-gray-700"}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  About Us
+                </Link>
+                <Link to="/contact" 
+                  className={`block py-2 ${location.pathname === "/contact" ? "text-primary font-medium" : "text-gray-700"}`}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Contact
+                </Link>
+              </div>
+            </div>
+
+            {/* Auth Section */}
+            <div className="p-4 border-t border-gray-200">
+              {user ? (
+                <div className="space-y-2">
+                  <Link to="/profile" 
+                    className="block py-2 text-gray-700 hover:text-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <i className="fas fa-user mr-2"></i> Profile
+                  </Link>
+                  <Link to="/dashboard" 
+                    className="block py-2 text-gray-700 hover:text-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <i className="fas fa-tachometer-alt mr-2"></i> Dashboard
+                  </Link>
+                  <Link to="/settings" 
+                    className="block py-2 text-gray-700 hover:text-primary"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <i className="fas fa-cog mr-2"></i> Settings
+                  </Link>
                   <button 
                     onClick={() => {
                       logout();
                       setMobileMenuOpen(false);
                     }}
-                    className="text-left text-red-500 hover:text-red-700 flex items-center"
+                    className="w-full text-left py-2 text-red-600 hover:text-red-800"
                   >
                     <i className="fas fa-sign-out-alt mr-2"></i> Logout
                   </button>
                 </div>
-              </div>
-            ) : (
-              <div className="flex flex-col space-y-2 border-t border-gray-200 pt-4">
-                <Link to="/login" className="btn-primary w-full text-center" onClick={() => setMobileMenuOpen(false)}>
-                  Login
-                </Link>
-                <Link to="/signup" className="btn-secondary w-full text-center" onClick={() => setMobileMenuOpen(false)}>
-                  Sign Up
-                </Link>
-              </div>
-            )}
+              ) : (
+                <div className="space-y-2">
+                  <Link to="/login" 
+                    className="block w-full py-2 text-center bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link to="/signup" 
+                    className="block w-full py-2 text-center bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         </div>
+
+        {/* Overlay for mobile menu */}
+        {mobileMenuOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 md:hidden z-30"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
       </div>
     </nav>
   );

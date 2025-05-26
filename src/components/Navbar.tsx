@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -75,8 +76,8 @@ const Navbar = () => {
         isScrolled ? "bg-white shadow-md py-2" : "bg-white/90 py-4"
       }`}
     >
-      <div className="full-width-container">
-        <div className="content-container mx-auto px-4">
+      <div className="w-full">
+        <div className="w-full max-w-none px-4">
           <div className="flex justify-between items-center">
             {/* Logo */}
             <Link to="/" className="flex items-center">
@@ -188,11 +189,11 @@ const Navbar = () => {
         >
           {/* Mobile Menu Content */}
           <div className="flex flex-col h-full">
-            {/* User Profile Section */}
+            {/* User Profile Section - Only show if logged in */}
             {user && (
-              <div className="p-4 bg-primary/5 border-b border-gray-200">
+              <div className="p-6 bg-primary/5 border-b border-gray-200">
                 <div className="flex items-center space-x-3">
-                  <span className="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center text-lg">
+                  <span className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-lg">
                     {user.name.charAt(0).toUpperCase()}
                   </span>
                   <div>
@@ -204,8 +205,8 @@ const Navbar = () => {
             )}
 
             {/* Search Bar */}
-            <div className="p-4 border-b border-gray-200">
-              <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-full px-4 py-2">
+            <div className="p-6 border-b border-gray-200">
+              <form onSubmit={handleSearch} className="flex items-center bg-gray-100 rounded-full px-4 py-3">
                 <input
                   type="text"
                   placeholder="Search..."
@@ -221,9 +222,9 @@ const Navbar = () => {
 
             {/* Navigation Links */}
             <div className="flex-1 overflow-y-auto">
-              <div className="p-4 space-y-4">
+              <div className="p-6 space-y-6">
                 <Link to="/" 
-                  className={`block py-2 ${location.pathname === "/" ? "text-primary font-medium" : "text-gray-700"}`}
+                  className={`block py-3 text-lg ${location.pathname === "/" ? "text-primary font-medium" : "text-gray-700"}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Home
@@ -233,15 +234,15 @@ const Navbar = () => {
                 <div>
                   <button 
                     onClick={toggleVehicleDropdown}
-                    className="flex items-center justify-between w-full py-2 text-left"
+                    className="flex items-center justify-between w-full py-3 text-left text-lg"
                   >
                     <span className={`${["/cars", "/buses", "/minibuses", "/coasters"].includes(location.pathname) ? "text-primary font-medium" : "text-gray-700"}`}>
                       Vehicles
                     </span>
-                    <i className={`fas fa-chevron-${vehicleDropdownOpen ? "up" : "down"} text-xs transition-transform duration-200`}></i>
+                    <i className={`fas fa-chevron-${vehicleDropdownOpen ? "up" : "down"} text-sm transition-transform duration-200`}></i>
                   </button>
                   
-                  <div className={`pl-4 space-y-2 overflow-hidden transition-all duration-200 ${vehicleDropdownOpen ? "max-h-48 opacity-100 mt-2" : "max-h-0 opacity-0"}`}>
+                  <div className={`pl-6 space-y-3 overflow-hidden transition-all duration-200 ${vehicleDropdownOpen ? "max-h-64 opacity-100 mt-3" : "max-h-0 opacity-0"}`}>
                     <Link to="/cars" className="block py-2 text-gray-600 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Cars</Link>
                     <Link to="/buses" className="block py-2 text-gray-600 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Buses</Link>
                     <Link to="/minibuses" className="block py-2 text-gray-600 hover:text-primary" onClick={() => setMobileMenuOpen(false)}>Mini Buses</Link>
@@ -250,13 +251,13 @@ const Navbar = () => {
                 </div>
 
                 <Link to="/about" 
-                  className={`block py-2 ${location.pathname === "/about" ? "text-primary font-medium" : "text-gray-700"}`}
+                  className={`block py-3 text-lg ${location.pathname === "/about" ? "text-primary font-medium" : "text-gray-700"}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   About Us
                 </Link>
                 <Link to="/contact" 
-                  className={`block py-2 ${location.pathname === "/contact" ? "text-primary font-medium" : "text-gray-700"}`}
+                  className={`block py-3 text-lg ${location.pathname === "/contact" ? "text-primary font-medium" : "text-gray-700"}`}
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Contact
@@ -265,47 +266,29 @@ const Navbar = () => {
             </div>
 
             {/* Auth Section */}
-            <div className="p-4 border-t border-gray-200">
+            <div className="p-6 border-t border-gray-200">
               {user ? (
-                <div className="space-y-2">
-                  <Link to="/profile" 
-                    className="block py-2 text-gray-700 hover:text-primary"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <i className="fas fa-user mr-2"></i> Profile
-                  </Link>
-                  <Link to="/dashboard" 
-                    className="block py-2 text-gray-700 hover:text-primary"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <i className="fas fa-tachometer-alt mr-2"></i> Dashboard
-                  </Link>
-                  <Link to="/settings" 
-                    className="block py-2 text-gray-700 hover:text-primary"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    <i className="fas fa-cog mr-2"></i> Settings
-                  </Link>
+                <div className="space-y-1">
                   <button 
                     onClick={() => {
                       logout();
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full text-left py-2 text-red-600 hover:text-red-800"
+                    className="w-full text-left py-3 text-lg text-red-600 hover:text-red-800 flex items-center"
                   >
-                    <i className="fas fa-sign-out-alt mr-2"></i> Logout
+                    <i className="fas fa-sign-out-alt mr-3"></i> Logout
                   </button>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Link to="/login" 
-                    className="block w-full py-2 text-center bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+                    className="block w-full py-4 text-center bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors text-lg font-medium"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Login
                   </Link>
                   <Link to="/signup" 
-                    className="block w-full py-2 text-center bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors"
+                    className="block w-full py-4 text-center bg-secondary text-white rounded-lg hover:bg-secondary-dark transition-colors text-lg font-medium"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Sign Up

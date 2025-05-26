@@ -1,537 +1,264 @@
 
-import { useState, useEffect } from "react";
-import { toast } from "sonner";
-import { useUser } from "@/contexts/UserContext";
-import { 
-  AlertDialog, 
-  AlertDialogContent, 
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction
-} from "@/components/ui/alert-dialog";
-import { BookingFormData, RentalPlan } from "@/types";
-import { calculatePrice } from "@/utils/pricing";
-import { majorCities, timeOptions } from "@/data/locationData";
+import { useState } from "react";
+import { DatePicker } from "./DatePicker";
 
-interface BookingFormProps {
-  vehicleCategory: "car" | "bus" | "minibus" | "coaster";
-  vehicleId?: string;
-  onSuccess?: () => void;
-}
-
-const BookingForm = ({ vehicleCategory, vehicleId, onSuccess }: BookingFormProps) => {
-  const { user } = useUser();
-  const [formData, setFormData] = useState<BookingFormData>({
-    fullName: user?.name || "",
-    email: user?.email || "",
-    phone: "",
-    pickupLocation: "",
-    dropLocation: "",
-    pickupDate: "",
-    pickupTime: "",
-    returnDate: "",
-    returnTime: "",
-    vehicleCategory,
-    rentalPlan: "12hour",
-    withDriver: false,
-    notes: "",
-    vehicleId,
-  });
-
-  // Shared Ride State
-  const [enableSharedRide, setEnableSharedRide] = useState(false);
-  const [sharedRiderInfo, setSharedRiderInfo] = useState({
+const BookingForm = () => {
+  const [formData, setFormData] = useState({
     name: "",
-    phone: "",
     email: "",
+    phone: "",
+    pickupCity: "",
+    destinationCity: "",
+    pickupDate: undefined as Date | undefined,
+    returnDate: undefined as Date | undefined,
+    passengers: 1,
+    shareRide: false,
+    coRiderName: "",
+    coRiderPhone: "",
+    coRiderEmail: ""
   });
 
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [price, setPrice] = useState<number | null>(null);
-  const [pricePerRider, setPricePerRider] = useState<number | null>(null);
-
-  // Calculate estimated price when rental plan or driver option changes
-  const updatePrice = () => {
-    const calculatedPrice = calculatePrice(
-      vehicleCategory,
-      formData.rentalPlan,
-      formData.withDriver
-    );
-    setPrice(calculatedPrice);
-    
-    // Calculate price per rider if shared ride is enabled
-    if (enableSharedRide) {
-      setPricePerRider(calculatedPrice / 2);
-    } else {
-      setPricePerRider(null);
-    }
-  };
-
-  // Update price when relevant form fields change
-  useEffect(() => {
-    updatePrice();
-  }, [formData.rentalPlan, formData.withDriver, enableSharedRide]);
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    
-    // Update price when rental plan changes
-    if (name === "rentalPlan") {
-      setFormData((prev) => ({ 
-        ...prev, 
-        [name]: value as RentalPlan
-      }));
-    }
-  };
-
-  const handleDriverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const withDriver = e.target.value === "with";
-    setFormData((prev) => ({ ...prev, withDriver }));
-  };
-
-  const handleSharedRiderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setSharedRiderInfo(prev => ({
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
-  };
-
-  const handleSharedRideToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEnableSharedRide(e.target.checked);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate form
-    if (!formData.fullName || !formData.email || !formData.phone || 
-        !formData.pickupLocation || !formData.dropLocation || 
-        !formData.pickupDate || !formData.returnDate) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    // Validate shared rider info if shared ride is enabled
-    if (enableSharedRide && (!sharedRiderInfo.name || !sharedRiderInfo.phone)) {
-      toast.error("Please fill in all shared rider information");
-      return;
-    }
-    
-    // Show confirmation dialog
-    updatePrice();
-    setShowConfirmation(true);
+    console.log("Booking form submitted:", formData);
   };
-
-  const confirmBooking = () => {
-    setIsSubmitting(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setShowConfirmation(false);
-      
-      // Success message
-      toast.success("Your booking has been submitted successfully!");
-      
-      // Reset form
-      setFormData({
-        fullName: user?.name || "",
-        email: user?.email || "",
-        phone: "",
-        pickupLocation: "",
-        dropLocation: "",
-        pickupDate: "",
-        pickupTime: "",
-        returnDate: "",
-        returnTime: "",
-        vehicleCategory,
-        rentalPlan: "12hour",
-        withDriver: false,
-        notes: "",
-        vehicleId,
-      });
-      setEnableSharedRide(false);
-      setSharedRiderInfo({
-        name: "",
-        phone: "",
-        email: "",
-      });
-      
-      // Call success callback if provided
-      if (onSuccess) {
-        onSuccess();
-      }
-    }, 1500);
-  };
-
-  // Check if vehicle category supports shared rides
-  const isSharedRideSupported = ["car", "minibus", "coaster"].includes(vehicleCategory);
 
   return (
-    <>
-      <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md">
-        <h3 className="text-xl font-semibold mb-4">Book Your Vehicle</h3>
-        
+    <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold mb-6 text-center">Book Your Ride</h2>
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Personal Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Personal Information */}
           <div>
-            <label className="form-label" htmlFor="fullName">Full Name</label>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              Full Name *
+            </label>
             <input
               type="text"
-              id="fullName"
-              name="fullName"
-              className="form-input"
-              value={formData.fullName}
-              onChange={handleChange}
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Enter your full name"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               required
             />
           </div>
           
           <div>
-            <label className="form-label" htmlFor="email">Email</label>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              Email Address *
+            </label>
             <input
               type="email"
               id="email"
               name="email"
-              className="form-input"
               value={formData.email}
-              onChange={handleChange}
+              onChange={handleInputChange}
+              placeholder="example@gmail.com"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
               required
             />
-          </div>
-          
-          <div>
-            <label className="form-label" htmlFor="phone">Phone Number</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              className="form-input"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          
-          {/* Location Information - Updated to use dropdowns with city list */}
-          <div>
-            <label className="form-label" htmlFor="pickupLocation">Pickup Location</label>
-            <select
-              id="pickupLocation"
-              name="pickupLocation"
-              className="form-input"
-              value={formData.pickupLocation}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Pickup Location</option>
-              {majorCities.map((city) => (
-                <option key={`pickup-${city}`} value={city}>{city}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div>
-            <label className="form-label" htmlFor="dropLocation">Drop-off Location</label>
-            <select
-              id="dropLocation"
-              name="dropLocation"
-              className="form-input"
-              value={formData.dropLocation}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Drop-off Location</option>
-              {majorCities.map((city) => (
-                <option key={`dropoff-${city}`} value={city}>{city}</option>
-              ))}
-            </select>
-          </div>
-          
-          {/* Date and Time - Updated time with dropdown */}
-          <div>
-            <label className="form-label" htmlFor="pickupDate">Pickup Date</label>
-            <input
-              type="date"
-              id="pickupDate"
-              name="pickupDate"
-              className="form-input"
-              value={formData.pickupDate}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          
-          <div>
-            <label className="form-label" htmlFor="pickupTime">Pickup Time</label>
-            <select
-              id="pickupTime"
-              name="pickupTime"
-              className="form-input"
-              value={formData.pickupTime}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Pickup Time</option>
-              {timeOptions.map((time) => (
-                <option key={`pickup-time-${time}`} value={time}>{time}</option>
-              ))}
-            </select>
-          </div>
-          
-          <div>
-            <label className="form-label" htmlFor="returnDate">Return Date</label>
-            <input
-              type="date"
-              id="returnDate"
-              name="returnDate"
-              className="form-input"
-              value={formData.returnDate}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          
-          <div>
-            <label className="form-label" htmlFor="returnTime">Return Time</label>
-            <select
-              id="returnTime"
-              name="returnTime"
-              className="form-input"
-              value={formData.returnTime}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Return Time</option>
-              {timeOptions.map((time) => (
-                <option key={`return-time-${time}`} value={time}>{time}</option>
-              ))}
-            </select>
-          </div>
-          
-          {/* Rental Options */}
-          <div>
-            <label className="form-label" htmlFor="rentalPlan">Rental Plan</label>
-            <select
-              id="rentalPlan"
-              name="rentalPlan"
-              className="form-input"
-              value={formData.rentalPlan}
-              onChange={handleChange}
-              required
-            >
-              <option value="12hour">12 Hour</option>
-              <option value="2day">2 Day</option>
-              <option value="3day">3 Day</option>
-            </select>
-          </div>
-          
-          <div>
-            <label className="form-label">Driver Option</label>
-            <div className="flex mt-2 space-x-4">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="driverOption"
-                  value="with"
-                  checked={formData.withDriver}
-                  onChange={handleDriverChange}
-                  className="mr-2"
-                />
-                With Driver
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  name="driverOption"
-                  value="without"
-                  checked={!formData.withDriver}
-                  onChange={handleDriverChange}
-                  className="mr-2"
-                />
-                Without Driver
-              </label>
-            </div>
           </div>
         </div>
-        
-        {/* Shared Ride Option */}
-        {isSharedRideSupported && (
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h4 className="font-semibold text-blue-800">Shared Ride Option</h4>
-                <p className="text-sm text-blue-600">Split the cost with a friend</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  className="sr-only peer"
-                  checked={enableSharedRide}
-                  onChange={handleSharedRideToggle}
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-                <span className="ml-3 text-sm font-medium">Enable Ride Share</span>
-              </label>
-            </div>
-            
-            {enableSharedRide && (
-              <div className="space-y-4 mt-4 border-t border-blue-200 pt-4">
-                <p className="text-sm text-blue-700 mb-3">
-                  You and your friend will both receive booking confirmation and split payment.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="form-label text-sm" htmlFor="sharedRiderName">Friend's Name</label>
-                    <input
-                      type="text"
-                      id="sharedRiderName"
-                      name="name"
-                      className="form-input"
-                      value={sharedRiderInfo.name}
-                      onChange={handleSharedRiderChange}
-                      required={enableSharedRide}
-                    />
-                  </div>
-                  <div>
-                    <label className="form-label text-sm" htmlFor="sharedRiderPhone">Friend's Phone</label>
-                    <input
-                      type="tel"
-                      id="sharedRiderPhone"
-                      name="phone"
-                      className="form-input"
-                      value={sharedRiderInfo.phone}
-                      onChange={handleSharedRiderChange}
-                      required={enableSharedRide}
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <label className="form-label text-sm" htmlFor="sharedRiderEmail">Friend's Email (Optional)</label>
-                    <input
-                      type="email"
-                      id="sharedRiderEmail"
-                      name="email"
-                      className="form-input"
-                      value={sharedRiderInfo.email}
-                      onChange={handleSharedRiderChange}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-        
-        {/* Price Display */}
-        {price !== null && (
-          <div className="mt-4 p-3 bg-gray-100 rounded-md">
-            <div className="flex justify-between items-center">
-              <span className="font-medium">Estimated Price:</span>
-              <span className="text-xl font-bold text-primary">
-                PKR {enableSharedRide ? `${pricePerRider?.toLocaleString()} per person` : price.toLocaleString()}
-              </span>
-            </div>
-            
-            {enableSharedRide && pricePerRider !== null && (
-              <div className="border-t border-gray-300 mt-2 pt-2">
-                <div className="flex justify-between text-sm">
-                  <span>Total booking price:</span>
-                  <span className="font-medium">PKR {price.toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Split equally (50% each):</span>
-                  <span className="font-medium">PKR {pricePerRider.toLocaleString()} × 2 people</span>
-                </div>
-              </div>
-            )}
-            
-            <div className="text-xs text-gray-500 mt-1">
-              Price for {formData.rentalPlan === "12hour" ? "12 Hours" : 
-                         formData.rentalPlan === "2day" ? "2 Days" : "3 Days"} 
-              {formData.withDriver ? " with driver" : " without driver"}
-            </div>
-          </div>
-        )}
-        
-        {/* Notes */}
-        <div className="mt-4">
-          <label className="form-label" htmlFor="notes">Additional Notes (optional)</label>
-          <textarea
-            id="notes"
-            name="notes"
-            rows={3}
-            className="form-input"
-            value={formData.notes}
-            onChange={handleChange}
-          ></textarea>
-        </div>
-        
-        {/* Submit Button */}
-        <div className="mt-6">
-          <button type="submit" className="btn-primary w-full">
-            Book Now
-          </button>
-        </div>
-      </form>
 
-      {/* Confirmation Modal - Using AlertDialog for better UX */}
-      <AlertDialog open={showConfirmation} onOpenChange={setShowConfirmation}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Your Booking</AlertDialogTitle>
-            <AlertDialogDescription>
-              <div className="space-y-3 mb-4">
-                <p><span className="font-medium">Vehicle:</span> {vehicleCategory.charAt(0).toUpperCase() + vehicleCategory.slice(1)}</p>
-                <p><span className="font-medium">Rental Plan:</span> {formData.rentalPlan === "12hour" ? "12 Hours" : 
-                        formData.rentalPlan === "2day" ? "2 Days" : "3 Days"}</p>
-                <p><span className="font-medium">Driver:</span> {formData.withDriver ? "With Driver" : "Without Driver"}</p>
-                <p><span className="font-medium">Pickup:</span> {formData.pickupLocation}</p>
-                <p><span className="font-medium">Drop-off:</span> {formData.dropLocation}</p>
-                
-                {enableSharedRide && (
-                  <div className="bg-blue-50 p-3 rounded-md border border-blue-200 mt-2">
-                    <p className="font-medium text-blue-800 mb-1">Shared Ride</p>
-                    <p><span className="font-medium">Co-passenger:</span> {sharedRiderInfo.name}</p>
-                    <p><span className="font-medium">Your price:</span> PKR {pricePerRider?.toLocaleString()}</p>
-                    <p className="text-xs text-blue-600 mt-1">Both passengers will receive booking confirmation.</p>
-                  </div>
-                )}
-                
-                <p className="text-xl font-bold text-primary mt-4">
-                  {enableSharedRide 
-                    ? `Your Share: PKR ${pricePerRider?.toLocaleString()}` 
-                    : `Total: PKR ${price?.toLocaleString()}`
-                  }
-                </p>
-              </div>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isSubmitting}>Cancel</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={confirmBooking}
-              disabled={isSubmitting}
-              className="btn-primary"
+        <div>
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
+            Phone Number *
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
+            placeholder="03xx-xxxxxxx"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+            required
+          />
+        </div>
+
+        {/* Travel Information */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="pickupCity" className="block text-sm font-medium text-gray-700 mb-2">
+              Pickup City *
+            </label>
+            <select
+              id="pickupCity"
+              name="pickupCity"
+              value={formData.pickupCity}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              required
             >
-              {isSubmitting ? 
-                <span className="flex items-center justify-center">
-                  <i className="fas fa-spinner fa-spin mr-2"></i> Processing...
-                </span> : 
-                'Confirm Booking'
-              }
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </>
+              <option value="">Select pickup city</option>
+              <option value="Karachi">Karachi</option>
+              <option value="Lahore">Lahore</option>
+              <option value="Faisalabad">Faisalabad</option>
+              <option value="Rawalpindi">Rawalpindi</option>
+              <option value="Islamabad">Islamabad</option>
+            </select>
+          </div>
+          
+          <div>
+            <label htmlFor="destinationCity" className="block text-sm font-medium text-gray-700 mb-2">
+              Destination City *
+            </label>
+            <select
+              id="destinationCity"
+              name="destinationCity"
+              value={formData.destinationCity}
+              onChange={handleInputChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+              required
+            >
+              <option value="">Select destination city</option>
+              <option value="Karachi">Karachi</option>
+              <option value="Lahore">Lahore</option>
+              <option value="Faisalabad">Faisalabad</option>
+              <option value="Rawalpindi">Rawalpindi</option>
+              <option value="Islamabad">Islamabad</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Date Selection */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Pickup Date *
+            </label>
+            <DatePicker
+              selected={formData.pickupDate}
+              onSelect={(date) => setFormData(prev => ({ ...prev, pickupDate: date }))}
+              placeholder="Select pickup date"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Return Date
+            </label>
+            <DatePicker
+              selected={formData.returnDate}
+              onSelect={(date) => setFormData(prev => ({ ...prev, returnDate: date }))}
+              placeholder="Select return date (optional)"
+              disabled={!formData.pickupDate}
+            />
+          </div>
+        </div>
+
+        <div>
+          <label htmlFor="passengers" className="block text-sm font-medium text-gray-700 mb-2">
+            Number of Passengers
+          </label>
+          <select
+            id="passengers"
+            name="passengers"
+            value={formData.passengers}
+            onChange={handleInputChange}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
+              <option key={num} value={num}>{num} Passenger{num > 1 ? 's' : ''}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Share Ride Option */}
+        <div className="border-t pt-6">
+          <div className="flex items-center space-x-3 mb-4">
+            <input
+              type="checkbox"
+              id="shareRide"
+              name="shareRide"
+              checked={formData.shareRide}
+              onChange={handleInputChange}
+              className="h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded"
+            />
+            <label htmlFor="shareRide" className="text-sm font-medium text-gray-700">
+              Share Booking with Co-Rider
+            </label>
+          </div>
+          
+          {/* Co-Rider Information - Fixed spacing for mobile */}
+          {formData.shareRide && (
+            <div className="space-y-4 pl-0 md:pl-7">
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="coRiderName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Co-rider Name *
+                  </label>
+                  <input
+                    type="text"
+                    id="coRiderName"
+                    name="coRiderName"
+                    value={formData.coRiderName}
+                    onChange={handleInputChange}
+                    placeholder="Enter co-rider full name"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    required={formData.shareRide}
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="coRiderPhone" className="block text-sm font-medium text-gray-700 mb-2">
+                    Co-rider Phone *
+                  </label>
+                  <input
+                    type="tel"
+                    id="coRiderPhone"
+                    name="coRiderPhone"
+                    value={formData.coRiderPhone}
+                    onChange={handleInputChange}
+                    placeholder="03xx-xxxxxxx"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    required={formData.shareRide}
+                  />
+                </div>
+                
+                <div>
+                  <label htmlFor="coRiderEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                    Co-rider Email *
+                  </label>
+                  <input
+                    type="email"
+                    id="coRiderEmail"
+                    name="coRiderEmail"
+                    value={formData.coRiderEmail}
+                    onChange={handleInputChange}
+                    placeholder="co-rider@example.com"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                    required={formData.shareRide}
+                  />
+                </div>
+              </div>
+              
+              <p className="text-xs text-gray-500 leading-relaxed">
+                Share your booking details with a co-rider for split costs and coordination.
+              </p>
+            </div>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-primary text-white py-3 px-4 rounded-md hover:bg-primary-dark transition-colors duration-200 font-medium"
+        >
+          Book Now
+        </button>
+      </form>
+    </div>
   );
 };
 

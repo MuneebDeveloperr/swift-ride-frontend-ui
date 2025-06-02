@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useUser } from "@/contexts/UserContext";
@@ -268,16 +267,39 @@ const Navbar = () => {
             {/* Auth Section */}
             <div className="p-6 border-t border-gray-200">
               {user ? (
-                <div className="space-y-1">
-                  <button 
-                    onClick={() => {
-                      logout();
-                      setMobileMenuOpen(false);
-                    }}
-                    className="w-full text-left py-3 text-lg text-red-600 hover:text-red-800 flex items-center"
+                <div className="space-y-4">
+                  <Link 
+                    to="/profile" 
+                    className="w-full text-left py-3 text-lg text-gray-700 hover:text-primary flex items-center transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
                   >
-                    <i className="fas fa-sign-out-alt mr-3"></i> Logout
-                  </button>
+                    <i className="fas fa-user mr-3 w-6"></i> Profile
+                  </Link>
+                  <Link 
+                    to="/dashboard" 
+                    className="w-full text-left py-3 text-lg text-gray-700 hover:text-primary flex items-center transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <i className="fas fa-tachometer-alt mr-3 w-6"></i> Dashboard
+                  </Link>
+                  <Link 
+                    to="/settings" 
+                    className="w-full text-left py-3 text-lg text-gray-700 hover:text-primary flex items-center transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <i className="fas fa-cog mr-3 w-6"></i> Settings
+                  </Link>
+                  <div className="pt-4 border-t border-gray-200">
+                    <button 
+                      onClick={() => {
+                        logout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full text-left py-3 text-lg text-red-600 hover:text-red-800 flex items-center transition-colors"
+                    >
+                      <i className="fas fa-sign-out-alt mr-3 w-6"></i> Logout
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-3">
